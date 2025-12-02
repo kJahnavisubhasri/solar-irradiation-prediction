@@ -1,270 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Solar Irradiance Predictor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Irradiance Prediction</title>
 
-<!----------------- CSS STYLES ----------------->
-<style>
-:root {
-    --bg: #0e0e10;
-    --card: #1c1c22;
-    --accent: #00e0b8;
-    --text: #ffffff;
-    --muted: #b3b3b3;
-}
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding: 20px;
-}
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+            color: white;
+        }
 
-.container {
-    max-width: 900px;
-    margin: auto;
-}
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-h1 {
-    text-align: center;
-}
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
 
-.card {
-    background: var(--card);
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
 
-label {
-    font-size: 14px;
-    color: var(--muted);
-}
+        .container {
+            max-width: 900px;
+            margin: auto;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.15);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.2);
+        }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    background: #2a2a30;
-    color: white;
-}
+        input, select, button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+        }
 
-button {
-    margin-top: 15px;
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    border: none;
-    font-size: 16px;
-    border-radius: 10px;
-    cursor: pointer;
-}
+        input, select {
+            background: rgba(255,255,255,0.8);
+        }
 
-button:hover {
-    opacity: 0.85;
-}
+        button {
+            background: #ffcc00;
+            color: black;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.result-box {
-    margin-top: 20px;
-    background: #111;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
+        button:hover {
+            background: #ffe066;
+        }
 
-/* About Us Section */
-.about {
-  margin-top: 40px;
-  background: rgba(255,255,255,0.03);
-  padding: 30px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.05);
-}
+        #resultBox {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 22px;
+            text-align: center;
+            font-weight: 600;
+            background: rgba(0,0,0,0.35);
+            border-radius: 12px;
+            display: none;
+        }
 
-.about h2 {
-  text-align: center;
-  font-size: 1.9rem;
-  margin-bottom: 15px;
-}
+        .about-section {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+        }
 
-.about-desc {
-  text-align: center;
-  color: var(--muted);
-  max-width: 700px;
-  margin: 0 auto 30px auto;
-  font-size: 15px;
-  line-height: 1.6;
-}
+        .team-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
 
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  margin-top: 20px;
-}
+        .team-table th, .team-table td {
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 12px;
+        }
 
-.team-card {
-  background: var(--card);
-  padding: 18px;
-  border-radius: 12px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+        .team-table th {
+            background: rgba(255,255,255,0.25);
+            font-size: 18px;
+        }
 
-.team-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 255, 200, 0.15);
-}
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
 
-.team-card h3 {
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-.role {
-  color: var(--muted);
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-.percent {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--accent);
-}
-
-.about-footer {
-  margin-top: 25px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 14px;
-}
-</style>
 </head>
 
 <body>
+
+<header>
+    <h1>Solar Irradiance Prediction</h1>
+    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
+</header>
+
 <div class="container">
 
-<h1>🌞 Solar Irradiance Predictor</h1>
+    <h2 style="text-align:center;">Enter Weather Parameters</h2>
 
-<div class="card">
-    <h2>Enter Weather Values</h2>
+    <input type="number" id="temp" placeholder="Temperature (°C)">
+    <input type="number" id="pressure" placeholder="Pressure (hPa)">
+    <input type="number" id="hour" placeholder="Hour (0-23)">
+    <input type="number" id="wind" placeholder="Wind Direction (Degrees)">
+    <input type="number" id="humidity" placeholder="Humidity (%)">
+    <input type="number" id="day" placeholder="Day">
+    <input type="number" id="month" placeholder="Month">
 
-    <label>Temperature</label>
-    <input id="Temperature" type="number">
+    <button onclick="predict()">Predict</button>
 
-    <label>Pressure</label>
-    <input id="Pressure" type="number">
+    <div id="resultBox"></div>
 
-    <label>Hour</label>
-    <input id="Hour" type="number">
+    <!-- ABOUT US SECTION -->
+    <div class="about-section">
+        <h2>About Us</h2>
+        <p>We are final-year engineering students who developed an advanced machine learning model to predict solar irradiance for renewable energy optimization.</p>
 
-    <label>Wind Direction (Degrees)</label>
-    <input id="Wind" type="number">
+        <table class="team-table">
+            <tr>
+                <th>Roll Number</th>
+                <th>Name</th>
+                <th>Percentage</th>
+            </tr>
 
-    <label>Humidity</label>
-    <input id="Humidity" type="number">
+            <tr><td>222U1A3704</td><td>B. VANDHANA</td><td>8.93%</td></tr>
+            <tr><td>222U1A3737</td><td>N. PRASANTHI</td><td>8.12%</td></tr>
+            <tr><td>222U1A3746</td><td>P. KAVYANJALI</td><td>8.21%</td></tr>
+            <tr><td>222U1A3724</td><td>K. JAHNAVI SUBHA SRI</td><td>8.52%</td></tr>
+            <tr><td>222U1A3744</td><td>P. SARANYA</td><td>7.52%</td></tr>
 
-    <label>Day</label>
-    <input id="Day" type="number">
-
-    <label>Month</label>
-    <input id="Month" type="number">
-
-    <button onclick="predict()">Predict Solar Irradiance</button>
-
-    <div id="result" class="result-box"></div>
-</div>
-
-<!----------------- ABOUT SECTION ----------------->
-<section class="about">
-  <h2>About Our Project</h2>
-
-  <p class="about-desc">
-    This website is developed as part of our final year B.Tech project to predict Solar
-    Irradiance using Machine Learning. The model runs entirely in the browser using ONNX,
-    ensuring fast and reliable predictions without any backend.
-  </p>
-
-  <div class="team-grid">
-
-    <div class="team-card">
-      <h3>B. Vandhana</h3>
-      <p class="role">Team Member</p>
-      <p class="percent">8.93%</p>
+        </table>
     </div>
-
-    <div class="team-card">
-      <h3>N. Prasanthi</h3>
-      <p class="role">Team Member</p>
-      <p class="percent">8.12%</p>
-    </div>
-
-    <div class="team-card">
-      <h3>P. Kavyanjali</h3>
-      <p class="role">Team Member</p>
-      <p class="percent">8.21%</p>
-    </div>
-
-    <div class="team-card">
-      <h3>K. Jahnavi Subha Sri</h3>
-      <p class="role">Team Member</p>
-      <p class="percent">8.52%</p>
-    </div>
-
-    <div class="team-card">
-      <h3>P. Saranya</h3>
-      <p class="role">Team Member</p>
-      <p class="percent">7.52%</p>
-    </div>
-
-  </div>
-
-  <div class="about-footer">
-    <p>Department of Data Science — Final Year Project</p>
-  </div>
-</section>
 
 </div>
 
-<!----------------- JS + ONNX RUNTIME ----------------->
-<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+<footer>
+    © 2025 Solar Prediction Project | Lovely Professional University
+</footer>
 
 <script>
-let session;
+    let modelLoaded = false;
+    let model;
 
-(async () => {
-    session = await ort.InferenceSession.create("rf_solar_model.onnx");
-    console.log("Model Loaded");
-})();
+    async function loadModel() {
+        if (!modelLoaded) {
+            const modelURL = "https://drive.google.com/uc?export=download&id=1qj5fM2gfiKJQAj71QnqDajouMefBGJHq";
+            const response = await fetch(modelURL);
+            const buffer = await response.arrayBuffer();
 
-async function predict() {
+            model = await tf.loadLayersModel(tf.io.browserFiles([new File([buffer], "model.json")]));
+            modelLoaded = true;
+        }
+    }
 
-    const data = [
-        Number(document.getElementById("Temperature").value),
-        Number(document.getElementById("Pressure").value),
-        Number(document.getElementById("Hour").value),
-        Number(document.getElementById("Wind").value),
-        Number(document.getElementById("Humidity").value),
-        Number(document.getElementById("Day").value),
-        Number(document.getElementById("Month").value),
-    ];
+    async function predict() {
+        await loadModel();
 
-    const inputTensor = new ort.Tensor("float32", Float32Array.from(data), [1, 7]);
-    const prediction = await session.run({ input: inputTensor });
+        const values = [
+            parseFloat(temp.value),
+            parseFloat(pressure.value),
+            parseFloat(hour.value),
+            parseFloat(wind.value),
+            parseFloat(humidity.value),
+            parseFloat(day.value),
+            parseFloat(month.value)
+        ];
 
-    document.getElementById("result").innerHTML =
-        "<b>Predicted Irradiance:</b> " + prediction.output.data[0].toFixed(2);
-}
+        const input = tf.tensor2d([values]);
+        const output = model.predict(input);
+        const prediction = (await output.array())[0][0];
+
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("resultBox").innerHTML =
+            "Predicted Solar Irradiance: <br><b>" + prediction.toFixed(2) + " W/m²</b>";
+    }
 </script>
+
+<!-- TensorFlow.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
 
 </body>
 </html>
