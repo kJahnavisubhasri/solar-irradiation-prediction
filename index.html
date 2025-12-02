@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solar Irradiance Predictor</title>
+
+<!----------------- CSS STYLES ----------------->
+<style>
+:root {
+    --bg: #0e0e10;
+    --card: #1c1c22;
+    --accent: #00e0b8;
+    --text: #ffffff;
+    --muted: #b3b3b3;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.card {
+    background: var(--card);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+label {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #2a2a30;
+    color: white;
+}
+
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.result-box {
+    margin-top: 20px;
+    background: #111;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* About Us Section */
+.about {
+  margin-top: 40px;
+  background: rgba(255,255,255,0.03);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.about h2 {
+  text-align: center;
+  font-size: 1.9rem;
+  margin-bottom: 15px;
+}
+
+.about-desc {
+  text-align: center;
+  color: var(--muted);
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.team-card {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 255, 200, 0.15);
+}
+
+.team-card h3 {
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.role {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.percent {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.about-footer {
+  margin-top: 25px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🌞 Solar Irradiance Predictor</h1>
+
+<div class="card">
+    <h2>Enter Weather Values</h2>
+
+    <label>Temperature</label>
+    <input id="Temperature" type="number">
+
+    <label>Pressure</label>
+    <input id="Pressure" type="number">
+
+    <label>Hour</label>
+    <input id="Hour" type="number">
+
+    <label>Wind Direction (Degrees)</label>
+    <input id="Wind" type="number">
+
+    <label>Humidity</label>
+    <input id="Humidity" type="number">
+
+    <label>Day</label>
+    <input id="Day" type="number">
+
+    <label>Month</label>
+    <input id="Month" type="number">
+
+    <button onclick="predict()">Predict Solar Irradiance</button>
+
+    <div id="result" class="result-box"></div>
+</div>
+
+<!----------------- ABOUT SECTION ----------------->
+<section class="about">
+  <h2>About Our Project</h2>
+
+  <p class="about-desc">
+    This website is developed as part of our final year B.Tech project to predict Solar
+    Irradiance using Machine Learning. The model runs entirely in the browser using ONNX,
+    ensuring fast and reliable predictions without any backend.
+  </p>
+
+  <div class="team-grid">
+
+    <div class="team-card">
+      <h3>B. Vandhana</h3>
+      <p class="role">Team Member</p>
+      <p class="percent">8.93%</p>
+    </div>
+
+    <div class="team-card">
+      <h3>N. Prasanthi</h3>
+      <p class="role">Team Member</p>
+      <p class="percent">8.12%</p>
+    </div>
+
+    <div class="team-card">
+      <h3>P. Kavyanjali</h3>
+      <p class="role">Team Member</p>
+      <p class="percent">8.21%</p>
+    </div>
+
+    <div class="team-card">
+      <h3>K. Jahnavi Subha Sri</h3>
+      <p class="role">Team Member</p>
+      <p class="percent">8.52%</p>
+    </div>
+
+    <div class="team-card">
+      <h3>P. Saranya</h3>
+      <p class="role">Team Member</p>
+      <p class="percent">7.52%</p>
+    </div>
+
+  </div>
+
+  <div class="about-footer">
+    <p>Department of Data Science — Final Year Project</p>
+  </div>
+</section>
+
+</div>
+
+<!----------------- JS + ONNX RUNTIME ----------------->
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
+<script>
+let session;
+
+(async () => {
+    session = await ort.InferenceSession.create("rf_solar_model.onnx");
+    console.log("Model Loaded");
+})();
+
+async function predict() {
+
+    const data = [
+        Number(document.getElementById("Temperature").value),
+        Number(document.getElementById("Pressure").value),
+        Number(document.getElementById("Hour").value),
+        Number(document.getElementById("Wind").value),
+        Number(document.getElementById("Humidity").value),
+        Number(document.getElementById("Day").value),
+        Number(document.getElementById("Month").value),
+    ];
+
+    const inputTensor = new ort.Tensor("float32", Float32Array.from(data), [1, 7]);
+    const prediction = await session.run({ input: inputTensor });
+
+    document.getElementById("result").innerHTML =
+        "<b>Predicted Irradiance:</b> " + prediction.output.data[0].toFixed(2);
+}
+</script>
+
+</body>
+</html>
