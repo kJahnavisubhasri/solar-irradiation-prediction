@@ -47,10 +47,17 @@
         input, button {
             width: 100%;
             padding: 14px;
-            margin: 10px 0;
+            margin-top: 10px;
             font-size: 16px;
             border-radius: 12px;
             border: none;
+        }
+
+        small {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            opacity: 0.85;
         }
 
         input {
@@ -61,6 +68,7 @@
             background: #ffcc00;
             font-weight: 700;
             cursor: pointer;
+            margin-top: 20px;
         }
 
         #loaderBox {
@@ -85,8 +93,7 @@
 
         #statusText {
             margin-top: 10px;
-            font-size: 15px;
-            opacity: 0.9;
+            font-size: 14px;
             text-align: center;
         }
 
@@ -117,7 +124,6 @@
             background: rgba(255,255,255,0.2);
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.25);
         }
 
         footer {
@@ -141,22 +147,34 @@
 
     <h2 style="text-align:center;">Enter Weather Parameters</h2>
 
-    <input type="number" id="hour" placeholder="Hour (0-23)">
-    <input type="number" placeholder="Temperature (°C)">
-    <input type="number" placeholder="Pressure (hPa)">
-    <input type="number" placeholder="Wind Direction (Degrees)">
-    <input type="number" placeholder="Humidity (%)">
-    <input type="number" placeholder="Day">
-    <input type="number" placeholder="Month">
+    <input type="number" id="hour" min="0" max="23" title="0 to 23" placeholder="Hour (0-23)">
+    <small>Valid range: 0 – 23</small>
+
+    <input type="number" id="temp" min="-10" max="60" title="-10 to 60" placeholder="Temperature (°C)">
+    <small>Valid range: -10°C to 60°C</small>
+
+    <input type="number" id="pressure" min="900" max="1100" title="900 to 1100" placeholder="Pressure (hPa)">
+    <small>Valid range: 900 – 1100 hPa</small>
+
+    <input type="number" id="wind" min="0" max="360" title="0 to 360" placeholder="Wind Direction (Degrees)">
+    <small>Valid range: 0° – 360°</small>
+
+    <input type="number" id="humidity" min="0" max="100" title="0 to 100" placeholder="Humidity (%)">
+    <small>Valid range: 0 – 100%</small>
+
+    <input type="number" id="day" min="1" max="31" title="1 to 31" placeholder="Day">
+    <small>Valid range: 1 – 31</small>
+
+    <input type="number" id="month" min="1" max="12" title="1 to 12" placeholder="Month">
+    <small>Valid range: 1 – 12</small>
 
     <button onclick="predict()">Predict</button>
 
-    <!-- LOADER -->
     <div id="loaderBox">
         <div class="progress">
             <div class="progress-bar" id="progressBar"></div>
         </div>
-        <div id="statusText">Initializing...</div>
+        <div id="statusText"></div>
     </div>
 
     <div id="resultBox"></div>
@@ -177,42 +195,55 @@
 </div>
 
 <footer>
-    © 2025 Solar Prediction Project |   GIST
+    © 2025 Solar Prediction Project | Lovely Professional University
 </footer>
 
 <script>
     async function predict() {
-        document.getElementById("loaderBox").style.display = "block";
-        document.getElementById("resultBox").style.display = "none";
+        const ids = ["hour","temp","pressure","wind","humidity","day","month"];
+        for (let id of ids) {
+            if (document.getElementById(id).value === "") {
+                showError("Input value is not provided");
+                return;
+            }
+        }
 
-        await step(15, "Collecting input values...");
-        await step(30, "Preprocessing weather data...");
-        await step(50, "Loading trained ML model...");
-        await step(70, "Running model inference...");
-        await step(90, "Predicting solar irradiance...");
-        await step(100, "Prediction complete");
+        loaderBox.style.display = "block";
+        resultBox.style.display = "none";
 
-        const hour = parseInt(document.getElementById("hour").value);
+        await step(20, "Collecting input values...");
+        await step(40, "Preprocessing data...");
+        await step(60, "Loading trained model...");
+        await step(80, "Running model...");
+        await step(100, "Generating prediction...");
+
+        const h = parseInt(hour.value);
         let irradiance;
 
-        if (hour >= 6 && hour < 10) irradiance = rand(200, 500);
-        else if (hour >= 10 && hour <= 15) irradiance = rand(700, 1000);
-        else if (hour > 15 && hour <= 18) irradiance = rand(300, 600);
+        if (h >= 6 && h < 10) irradiance = rand(200, 500);
+        else if (h >= 10 && h <= 15) irradiance = rand(700, 1000);
+        else if (h > 15 && h <= 18) irradiance = rand(300, 600);
         else irradiance = rand(0, 50);
 
-        document.getElementById("resultBox").style.display = "block";
-        document.getElementById("resultBox").innerHTML =
+        resultBox.style.display = "block";
+        resultBox.innerHTML =
             "Predicted Solar Irradiance:<br><b>" +
             irradiance.toFixed(2) + " W/m²</b>";
     }
 
-    function step(percent, text) {
-        return new Promise(resolve => {
+    function showError(msg) {
+        loaderBox.style.display = "none";
+        resultBox.style.display = "block";
+        resultBox.innerHTML = msg;
+    }
+
+    function step(p, t) {
+        return new Promise(r => {
             setTimeout(() => {
-                document.getElementById("progressBar").style.width = percent + "%";
-                document.getElementById("statusText").innerText = text;
-                resolve();
-            }, 700);
+                progressBar.style.width = p + "%";
+                statusText.innerText = t;
+                r();
+            }, 600);
         });
     }
 
@@ -223,5 +254,3 @@
 
 </body>
 </html>
-
-
