@@ -199,58 +199,79 @@
 </footer>
 
 <script>
-    async function predict() {
-        const ids = ["hour","temp","pressure","wind","humidity","day","month"];
-        for (let id of ids) {
-            if (document.getElementById(id).value === "") {
-                showError("Input value is not provided");
-                return;
-            }
+async function predict() {
+
+    const fields = [
+        { id: "hour", min: 0, max: 23, name: "Hour" },
+        { id: "temp", min: -10, max: 60, name: "Temperature" },
+        { id: "pressure", min: 900, max: 1100, name: "Pressure" },
+        { id: "wind", min: 0, max: 360, name: "Wind Direction" },
+        { id: "humidity", min: 0, max: 100, name: "Humidity" },
+        { id: "day", min: 1, max: 31, name: "Day" },
+        { id: "month", min: 1, max: 12, name: "Month" }
+    ];
+
+    // 🔒 STRICT validation
+    for (let f of fields) {
+        const el = document.getElementById(f.id);
+        const value = el.valueAsNumber;
+
+        if (el.value === "" || isNaN(value)) {
+            showError("Input value is not provided");
+            return;
         }
 
-        loaderBox.style.display = "block";
-        resultBox.style.display = "none";
-
-        await step(20, "Collecting input values...");
-        await step(40, "Preprocessing data...");
-        await step(60, "Loading trained model...");
-        await step(80, "Running model...");
-        await step(100, "Generating prediction...");
-
-        const h = parseInt(hour.value);
-        let irradiance;
-
-        if (h >= 6 && h < 10) irradiance = rand(200, 500);
-        else if (h >= 10 && h <= 15) irradiance = rand(700, 1000);
-        else if (h > 15 && h <= 18) irradiance = rand(300, 600);
-        else irradiance = rand(0, 50);
-
-        resultBox.style.display = "block";
-        resultBox.innerHTML =
-            "Predicted Solar Irradiance:<br><b>" +
-            irradiance.toFixed(2) + " W/m²</b>";
+        if (value < f.min || value > f.max) {
+            showError(`${f.name} must be between ${f.min} and ${f.max}`);
+            return;
+        }
     }
 
-    function showError(msg) {
-        loaderBox.style.display = "none";
-        resultBox.style.display = "block";
-        resultBox.innerHTML = msg;
-    }
+    // ✅ Inputs are valid → run fake ML pipeline
+    loaderBox.style.display = "block";
+    resultBox.style.display = "none";
 
-    function step(p, t) {
-        return new Promise(r => {
-            setTimeout(() => {
-                progressBar.style.width = p + "%";
-                statusText.innerText = t;
-                r();
-            }, 600);
-        });
-    }
+    await step(20, "Collecting input values...");
+    await step(40, "Preprocessing data...");
+    await step(60, "Loading trained model...");
+    await step(80, "Running model...");
+    await step(100, "Generating prediction...");
 
-    function rand(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+    const h = document.getElementById("hour").valueAsNumber;
+    let irradiance;
+
+    if (h >= 6 && h < 10) irradiance = rand(200, 500);
+    else if (h >= 10 && h <= 15) irradiance = rand(700, 1000);
+    else if (h > 15 && h <= 18) irradiance = rand(300, 600);
+    else irradiance = rand(0, 50);
+
+    resultBox.style.display = "block";
+    resultBox.innerHTML =
+        "Predicted Solar Irradiance:<br><b>" +
+        irradiance.toFixed(2) + " W/m²</b>";
+}
+
+function showError(msg) {
+    loaderBox.style.display = "none";
+    resultBox.style.display = "block";
+    resultBox.innerHTML = msg;
+}
+
+function step(p, t) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            progressBar.style.width = p + "%";
+            statusText.innerText = t;
+            resolve();
+        }, 600);
+    });
+}
+
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
+}
 </script>
 
 </body>
 </html>
+
