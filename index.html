@@ -201,6 +201,10 @@
 <script>
 async function predict() {
 
+    // Explicitly hide previous output
+    loaderBox.style.display = "none";
+    resultBox.style.display = "none";
+
     const fields = [
         { id: "hour", min: 0, max: 23, name: "Hour" },
         { id: "temp", min: -10, max: 60, name: "Temperature" },
@@ -211,25 +215,30 @@ async function predict() {
         { id: "month", min: 1, max: 12, name: "Month" }
     ];
 
-    // 🔒 STRICT validation
-    for (let f of fields) {
+    // 🔒 HARD validation
+    for (let i = 0; i < fields.length; i++) {
+        const f = fields[i];
         const el = document.getElementById(f.id);
-        const value = el.valueAsNumber;
+        const raw = el.value;
+        const val = Number(raw);
 
-        if (el.value === "" || isNaN(value)) {
+        // Empty OR non-number
+        if (raw === "" || Number.isNaN(val)) {
             showError("Input value is not provided");
             return;
         }
 
-        if (value < f.min || value > f.max) {
-            showError(`${f.name} must be between ${f.min} and ${f.max}`);
+        // Range violation
+        if (val < f.min || val > f.max) {
+            showError(
+                `${f.name} value must be between ${f.min} and ${f.max}`
+            );
             return;
         }
     }
 
-    // ✅ Inputs are valid → run fake ML pipeline
+    // ✅ VALID INPUTS — START PIPELINE
     loaderBox.style.display = "block";
-    resultBox.style.display = "none";
 
     await step(20, "Collecting input values...");
     await step(40, "Preprocessing data...");
@@ -237,14 +246,15 @@ async function predict() {
     await step(80, "Running model...");
     await step(100, "Generating prediction...");
 
-    const h = document.getElementById("hour").valueAsNumber;
+    const hourVal = Number(document.getElementById("hour").value);
     let irradiance;
 
-    if (h >= 6 && h < 10) irradiance = rand(200, 500);
-    else if (h >= 10 && h <= 15) irradiance = rand(700, 1000);
-    else if (h > 15 && h <= 18) irradiance = rand(300, 600);
+    if (hourVal >= 6 && hourVal < 10) irradiance = rand(200, 500);
+    else if (hourVal >= 10 && hourVal <= 15) irradiance = rand(700, 1000);
+    else if (hourVal > 15 && hourVal <= 18) irradiance = rand(300, 600);
     else irradiance = rand(0, 50);
 
+    loaderBox.style.display = "none";
     resultBox.style.display = "block";
     resultBox.innerHTML =
         "Predicted Solar Irradiance:<br><b>" +
@@ -257,11 +267,11 @@ function showError(msg) {
     resultBox.innerHTML = msg;
 }
 
-function step(p, t) {
+function step(p, text) {
     return new Promise(resolve => {
         setTimeout(() => {
             progressBar.style.width = p + "%";
-            statusText.innerText = t;
+            statusText.innerText = text;
             resolve();
         }, 600);
     });
@@ -272,6 +282,8 @@ function rand(min, max) {
 }
 </script>
 
+
 </body>
 </html>
+
 
