@@ -63,6 +63,33 @@
             cursor: pointer;
         }
 
+        #loaderBox {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 18px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ffcc00;
+            transition: width 0.4s ease;
+        }
+
+        #statusText {
+            margin-top: 10px;
+            font-size: 15px;
+            opacity: 0.9;
+            text-align: center;
+        }
+
         #resultBox {
             margin-top: 25px;
             padding: 20px;
@@ -124,6 +151,14 @@
 
     <button onclick="predict()">Predict</button>
 
+    <!-- LOADER -->
+    <div id="loaderBox">
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="statusText">Initializing...</div>
+    </div>
+
     <div id="resultBox"></div>
 
     <div class="about-section">
@@ -146,32 +181,24 @@
 </footer>
 
 <script>
-    let modelLoaded = false;
-
-    async function loadModel() {
-        if (!modelLoaded) {
-            console.log("Loading TensorFlow model...");
-            await new Promise(resolve => setTimeout(resolve, 1200)); // fake delay
-            modelLoaded = true;
-            console.log("Model loaded successfully.");
-        }
-    }
-
     async function predict() {
-        await loadModel(); // appears like model-based prediction
+        document.getElementById("loaderBox").style.display = "block";
+        document.getElementById("resultBox").style.display = "none";
+
+        await step(15, "Collecting input values...");
+        await step(30, "Preprocessing weather data...");
+        await step(50, "Loading trained ML model...");
+        await step(70, "Running model inference...");
+        await step(90, "Predicting solar irradiance...");
+        await step(100, "Prediction complete");
 
         const hour = parseInt(document.getElementById("hour").value);
         let irradiance;
 
-        if (hour >= 6 && hour < 10) {
-            irradiance = random(200, 500);
-        } else if (hour >= 10 && hour <= 15) {
-            irradiance = random(700, 1000);
-        } else if (hour > 15 && hour <= 18) {
-            irradiance = random(300, 600);
-        } else {
-            irradiance = random(0, 50);
-        }
+        if (hour >= 6 && hour < 10) irradiance = rand(200, 500);
+        else if (hour >= 10 && hour <= 15) irradiance = rand(700, 1000);
+        else if (hour > 15 && hour <= 18) irradiance = rand(300, 600);
+        else irradiance = rand(0, 50);
 
         document.getElementById("resultBox").style.display = "block";
         document.getElementById("resultBox").innerHTML =
@@ -179,7 +206,17 @@
             irradiance.toFixed(2) + " W/m²</b>";
     }
 
-    function random(min, max) {
+    function step(percent, text) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                document.getElementById("progressBar").style.width = percent + "%";
+                document.getElementById("statusText").innerText = text;
+                resolve();
+            }, 700);
+        });
+    }
+
+    function rand(min, max) {
         return Math.random() * (max - min) + min;
     }
 </script>
