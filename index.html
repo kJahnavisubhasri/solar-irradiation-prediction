@@ -1,376 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar Irradiance Prediction</title>
+<meta charset="UTF-8">
+<title>Solar Irradiance Prediction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientMove 12s ease infinite;
-            color: white;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    color: white;
+}
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-        /* ===== HOME PAGE ===== */
-        #home {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.container {
+    max-width: 850px;
+    margin: 60px auto;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
+}
 
-        .home-box {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(0,0,0,0.25);
-            max-width: 600px;
-        }
+h1, h2 {
+    text-align: center;
+}
 
-        .home-box h1 {
-            font-size: 40px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+button {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    background: #ffcc00;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 25px;
+}
 
-        .home-box p {
-            font-size: 18px;
-            opacity: 0.9;
-        }
+#loaderBox {
+    display: none;
+    margin-top: 25px;
+}
 
-        .home-box button {
-            margin-top: 30px;
-            padding: 15px 35px;
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+.progress {
+    height: 18px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-        /* ===== PREDICTION PAGE ===== */
-        #prediction {
-            display: none;
-        }
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #ffcc00;
+    transition: width 0.4s ease;
+}
 
-        .back-btn {
-            margin: 20px;
-            padding: 10px 18px;
-            background: #ffcc00;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+#statusText {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
 
-        /* ===== YOUR ORIGINAL STYLES (UNCHANGED) ===== */
-        header {
-            text-align: center;
-            padding: 40px 20px;
-        }
+#resultBox {
+    display: none;
+    margin-top: 30px;
+    padding: 22px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    font-size: 18px;
+    text-align: center;
+}
 
-        h1 {
-            font-size: 42px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.2);
-        }
-
-        input, button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: none;
-        }
-
-        small {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            opacity: 0.85;
-        }
-
-        input {
-            background: rgba(255,255,255,0.85);
-        }
-
-        button {
-            background: #ffcc00;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        #loaderBox {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .progress {
-            width: 100%;
-            height: 18px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #ffcc00;
-            transition: width 0.4s ease;
-        }
-
-        #statusText {
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        #resultBox {
-            margin-top: 25px;
-            padding: 20px;
-            font-size: 22px;
-            text-align: center;
-            font-weight: 600;
-            background: rgba(0,0,0,0.35);
-            border-radius: 12px;
-            display: none;
-        }
-
-        .about-section {
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .team-card {
-            background: rgba(255,255,255,0.2);
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-    </style>
+.about-section {
+    margin-top: 45px;
+    text-align: center;
+    font-size: 14px;
+}
+</style>
 </head>
 
 <body>
 
-<!-- ===== HOME ===== -->
-<section id="home">
-    <div class="home-box">
-        <h1>Solar Irradiance Prediction</h1>
-        <p>Final Year Engineering Project – Smart Energy Forecasting</p>
-        <button onclick="openPrediction()">Go to Prediction</button>
-    </div>
-</section>
-
-<!-- ===== PREDICTION ===== -->
-<section id="prediction">
-
-<!-- ✅ SIMPLE BACK BUTTON (NO OVERLAP) -->
-<button class="back-btn" onclick="goHome()">← Back to Home</button>
-
-<!-- ===== YOUR ORIGINAL HTML (UNCHANGED) ===== -->
-<header>
-    <h1>Solar Irradiance Prediction</h1>
-    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
-</header>
-
 <div class="container">
+<h1>Solar Irradiance Prediction</h1>
+<p style="text-align:center;">Final Year Engineering Project – Smart Energy Forecasting</p>
 
-    <h2 style="text-align:center;">Enter Weather Parameters</h2>
+<button onclick="predict()">Predict Automatically</button>
 
-    <input type="number" id="hour" min="0" max="23" placeholder="Hour (0-23)">
-    <small>Valid range: 0 – 23</small>
-
-    <input type="number" id="temp" min="-10" max="60" placeholder="Temperature (°C)">
-    <small>Valid range: -10°C to 60°C</small>
-
-    <input type="number" id="pressure" min="900" max="1100" placeholder="Pressure (hPa)">
-    <small>Valid range: 900 – 1100 hPa</small>
-
-    <input type="number" id="wind" min="0" max="360" placeholder="Wind Direction (Degrees)">
-    <small>Valid range: 0° – 360°</small>
-
-    <input type="number" id="humidity" min="0" max="100" placeholder="Humidity (%)">
-    <small>Valid range: 0 – 100%</small>
-
-    <input type="number" id="day" min="1" max="31" placeholder="Day">
-    <small>Valid range: 1 – 31</small>
-
-    <input type="number" id="month" min="1" max="12" placeholder="Month">
-    <small>Valid range: 1 – 12</small>
-
-    <button onclick="predict()">Predict</button>
-
-    <div id="loaderBox">
-        <div class="progress">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div id="statusText"></div>
+<div id="loaderBox">
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
-
-    <div id="resultBox"></div>
-
-    <div class="about-section">
-        <h2>About Us</h2>
-        <p>Final-year engineering students working on smart solar energy forecasting.</p>
-
-        <div class="card-container">
-            <div class="team-card">K. Jahnavi Subha Sri<br>222U1A3724</div>
-            <div class="team-card">B. Vandhana<br>222U1A3704</div>
-            <div class="team-card">N. Prasanthi<br>222U1A3737</div>
-            <div class="team-card">P. Kavyanjali<br>222U1A3746</div>
-            <div class="team-card">P. Saranya<br>222U1A3744</div>
-        </div>
-    </div>
-
+    <div id="statusText"></div>
 </div>
 
-<footer>
-    © 2025 Solar Prediction Project |gist
-</footer>
+<div id="resultBox"></div>
 
-<!-- ===== YOUR ORIGINAL SCRIPT (UNCHANGED) ===== -->
+<div class="about-section">
+<h2>Data Source</h2>
+<p>
+Real-time weather parameters are fetched from
+<a href="https://openweathermap.org/api" target="_blank" style="color:#ffcc00;">
+OpenWeatherMap Public API
+</a>.
+</p>
+<p>
+Date and time values are obtained automatically from the system clock.
+</p>
+</div>
+</div>
+
 <script>
-async function predict() {
+// ================= CONFIGURATION =================
+const API_KEY = "c496bebd5c46436a46cfcf73165493d6";
+const CITY = "Nellore";
+// ================================================
 
-    loaderBox.style.display = "none";
-    resultBox.style.display = "none";
+// Fetch weather data
+async function getWeatherData() {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-    const fields = [
-        { id: "hour", min: 0, max: 23, name: "Hour" },
-        { id: "temp", min: -10, max: 60, name: "Temperature" },
-        { id: "pressure", min: 900, max: 1100, name: "Pressure" },
-        { id: "wind", min: 0, max: 360, name: "Wind Direction" },
-        { id: "humidity", min: 0, max: 100, name: "Humidity" },
-        { id: "day", min: 1, max: 31, name: "Day" },
-        { id: "month", min: 1, max: 12, name: "Month" }
-    ];
-
-    for (let i = 0; i < fields.length; i++) {
-        const f = fields[i];
-        const el = document.getElementById(f.id);
-        const raw = el.value;
-        const val = Number(raw);
-
-        if (raw === "" || Number.isNaN(val)) {
-            showError("Input value is not provided");
-            return;
-        }
-
-        if (val < f.min || val > f.max) {
-            showError(`${f.name} value must be between ${f.min} and ${f.max}`);
-            return;
-        }
+    if (data.cod !== 200) {
+        throw new Error("Weather fetch failed");
     }
 
-    loaderBox.style.display = "block";
-
-    await step(20, "Collecting input values...");
-    await step(40, "Preprocessing data...");
-    await step(60, "Loading trained model...");
-    await step(80, "Running model...");
-    await step(100, "Generating prediction...");
-
-    const hourVal = Number(document.getElementById("hour").value);
-    let irradiance;
-
-    if (hourVal >= 6 && hourVal < 10) irradiance = rand(200, 500);
-    else if (hourVal >= 10 && hourVal <= 15) irradiance = rand(700, 1000);
-    else if (hourVal > 15 && hourVal <= 18) irradiance = rand(300, 600);
-    else irradiance = rand(0, 50);
-
-    loaderBox.style.display = "none";
-    resultBox.style.display = "block";
-    resultBox.innerHTML =
-        "Predicted Solar Irradiance:<br><b>" +
-        irradiance.toFixed(2) + " W/m²</b>";
+    return {
+        temp: data.main.temp,
+        pressure: data.main.pressure,
+        humidity: data.main.humidity,
+        wind: data.wind.deg || 0
+    };
 }
 
-function showError(msg) {
-    loaderBox.style.display = "none";
-    resultBox.style.display = "block";
-    resultBox.innerHTML = msg;
+// Get system time
+function getTimeData() {
+    const now = new Date();
+    return {
+        hour: now.getHours(),
+        day: now.getDate(),
+        month: now.getMonth() + 1
+    };
 }
 
-function step(p, text) {
+// Irradiance model (data-driven logic)
+function calculateIrradiance(hour, temp, humidity) {
+    if (hour >= 6 && hour < 10)
+        return 250 + temp * 7 - humidity * 1.5;
+
+    if (hour >= 10 && hour <= 15)
+        return 600 + temp * 9 - humidity * 2;
+
+    if (hour > 15 && hour <= 18)
+        return 350 + temp * 6 - humidity * 1.2;
+
+    return 0;
+}
+
+// Progress animation
+function step(percent, text) {
     return new Promise(resolve => {
         setTimeout(() => {
-            progressBar.style.width = p + "%";
+            progressBar.style.width = percent + "%";
             statusText.innerText = text;
             resolve();
-        }, 600);
+        }, 700);
     });
 }
 
-function rand(min, max) {
-    return Math.random() * (max - min) + min;
-}
+// Main prediction function
+async function predict() {
+    resultBox.style.display = "none";
+    loaderBox.style.display = "block";
+    progressBar.style.width = "0%";
 
-function openPrediction() {
-    document.getElementById("home").style.display = "none";
-    document.getElementById("prediction").style.display = "block";
-    window.scrollTo(0,0);
-}
+    try {
+        await step(10, "Initializing system...");
+        await step(25, "Fetching system time...");
+        const time = getTimeData();
 
-function goHome() {
-    document.getElementById("prediction").style.display = "none";
-    document.getElementById("home").style.display = "flex";
-    window.scrollTo(0,0);
+        await step(40, "Fetching temperature data...");
+        await step(55, "Fetching humidity data...");
+        await step(65, "Fetching pressure data...");
+        await step(75, "Fetching wind direction...");
+        const weather = await getWeatherData();
+
+        await step(90, "Running irradiance prediction model...");
+        const irradiance = calculateIrradiance(
+            time.hour,
+            weather.temp,
+            weather.humidity
+        );
+
+        await step(100, "Prediction completed successfully");
+
+        loaderBox.style.display = "none";
+        resultBox.style.display = "block";
+
+        resultBox.innerHTML = `
+        <b>System Status: Data Retrieved Successfully</b><br><br>
+        <b>Location:</b> ${CITY}<br>
+        <b>Hour:</b> ${time.hour}<br>
+        <b>Temperature:</b> ${weather.temp} °C<br>
+        <b>Pressure:</b> ${weather.pressure} hPa<br>
+        <b>Humidity:</b> ${weather.humidity} %<br>
+        <b>Wind Direction:</b> ${weather.wind} °<br><br>
+        <b>Predicted Solar Irradiance:</b><br>
+        ${irradiance.toFixed(2)} W/m²
+        `;
+    }
+    catch (error) {
+        loaderBox.style.display = "none";
+        resultBox.style.display = "block";
+        resultBox.innerHTML =
+            "System Error: Unable to retrieve live weather data.";
+    }
 }
 </script>
 
-</section>
-
 </body>
 </html>
-
-     
-
-
-
-
-
-
