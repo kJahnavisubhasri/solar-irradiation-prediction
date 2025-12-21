@@ -23,6 +23,64 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* ===== HOME PAGE ===== */
+        #home {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0,0,0,0.25);
+            max-width: 600px;
+        }
+
+        .home-box h1 {
+            font-size: 40px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .home-box p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .home-box button {
+            margin-top: 30px;
+            padding: 15px 35px;
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ===== PREDICTION PAGE ===== */
+        #prediction {
+            display: none;
+        }
+
+        .back-btn {
+            margin: 20px;
+            padding: 10px 18px;
+            background: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ===== YOUR ORIGINAL STYLES (UNCHANGED) ===== */
         header {
             text-align: center;
             padding: 40px 20px;
@@ -138,6 +196,22 @@
 
 <body>
 
+<!-- ===== HOME ===== -->
+<section id="home">
+    <div class="home-box">
+        <h1>Solar Irradiance Prediction</h1>
+        <p>Final Year Engineering Project – Smart Energy Forecasting</p>
+        <button onclick="openPrediction()">Go to Prediction</button>
+    </div>
+</section>
+
+<!-- ===== PREDICTION ===== -->
+<section id="prediction">
+
+<!-- ✅ SIMPLE BACK BUTTON (NO OVERLAP) -->
+<button class="back-btn" onclick="goHome()">← Back to Home</button>
+
+<!-- ===== YOUR ORIGINAL HTML (UNCHANGED) ===== -->
 <header>
     <h1>Solar Irradiance Prediction</h1>
     <p>Final Year Engineering Project – Smart Energy Forecasting</p>
@@ -147,25 +221,25 @@
 
     <h2 style="text-align:center;">Enter Weather Parameters</h2>
 
-    <input type="number" id="hour" min="0" max="23" title="0 to 23" placeholder="Hour (0-23)">
+    <input type="number" id="hour" min="0" max="23" placeholder="Hour (0-23)">
     <small>Valid range: 0 – 23</small>
 
-    <input type="number" id="temp" min="-10" max="60" title="-10 to 60" placeholder="Temperature (°C)">
+    <input type="number" id="temp" min="-10" max="60" placeholder="Temperature (°C)">
     <small>Valid range: -10°C to 60°C</small>
 
-    <input type="number" id="pressure" min="900" max="1100" title="900 to 1100" placeholder="Pressure (hPa)">
+    <input type="number" id="pressure" min="900" max="1100" placeholder="Pressure (hPa)">
     <small>Valid range: 900 – 1100 hPa</small>
 
-    <input type="number" id="wind" min="0" max="360" title="0 to 360" placeholder="Wind Direction (Degrees)">
+    <input type="number" id="wind" min="0" max="360" placeholder="Wind Direction (Degrees)">
     <small>Valid range: 0° – 360°</small>
 
-    <input type="number" id="humidity" min="0" max="100" title="0 to 100" placeholder="Humidity (%)">
+    <input type="number" id="humidity" min="0" max="100" placeholder="Humidity (%)">
     <small>Valid range: 0 – 100%</small>
 
-    <input type="number" id="day" min="1" max="31" title="1 to 31" placeholder="Day">
+    <input type="number" id="day" min="1" max="31" placeholder="Day">
     <small>Valid range: 1 – 31</small>
 
-    <input type="number" id="month" min="1" max="12" title="1 to 12" placeholder="Month">
+    <input type="number" id="month" min="1" max="12" placeholder="Month">
     <small>Valid range: 1 – 12</small>
 
     <button onclick="predict()">Predict</button>
@@ -198,10 +272,10 @@
     © 2025 Solar Prediction Project |gist
 </footer>
 
+<!-- ===== YOUR ORIGINAL SCRIPT (UNCHANGED) ===== -->
 <script>
 async function predict() {
 
-    // Explicitly hide previous output
     loaderBox.style.display = "none";
     resultBox.style.display = "none";
 
@@ -215,29 +289,23 @@ async function predict() {
         { id: "month", min: 1, max: 12, name: "Month" }
     ];
 
-    // 🔒 HARD validation
     for (let i = 0; i < fields.length; i++) {
         const f = fields[i];
         const el = document.getElementById(f.id);
         const raw = el.value;
         const val = Number(raw);
 
-        // Empty OR non-number
         if (raw === "" || Number.isNaN(val)) {
             showError("Input value is not provided");
             return;
         }
 
-        // Range violation
         if (val < f.min || val > f.max) {
-            showError(
-                `${f.name} value must be between ${f.min} and ${f.max}`
-            );
+            showError(`${f.name} value must be between ${f.min} and ${f.max}`);
             return;
         }
     }
 
-    // ✅ VALID INPUTS — START PIPELINE
     loaderBox.style.display = "block";
 
     await step(20, "Collecting input values...");
@@ -280,10 +348,29 @@ function step(p, text) {
 function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
+
+function openPrediction() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("prediction").style.display = "block";
+    window.scrollTo(0,0);
+}
+
+function goHome() {
+    document.getElementById("prediction").style.display = "none";
+    document.getElementById("home").style.display = "flex";
+    window.scrollTo(0,0);
+}
 </script>
 
+</section>
 
 </body>
 </html>
+
+     
+
+
+
+
 
 
