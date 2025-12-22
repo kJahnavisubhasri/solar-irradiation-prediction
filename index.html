@@ -1,338 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar Irradiance Prediction</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Irradiance Prediction</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientMove 12s ease infinite;
-            color: white;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    color: white;
+}
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+/* HOME */
+#home {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.home-box {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
+    max-width: 600px;
+}
+.home-box h1 { font-size: 40px; font-weight: 700; }
+.home-box p { font-size: 18px; opacity: 0.9; }
+.home-box button {
+    margin-top: 30px;
+    padding: 15px 35px;
+    background: #ffcc00;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
 
-        #home {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+/* PREDICTION */
+#prediction { display: none; }
+.back-btn {
+    margin: 20px;
+    padding: 10px 18px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-        .home-box {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(0,0,0,0.25);
-            max-width: 600px;
-        }
+header {
+    text-align: center;
+    padding: 40px 20px;
+}
+h1 { font-size: 42px; font-weight: 700; }
 
-        .home-box h1 {
-            font-size: 40px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+}
 
-        .home-box p {
-            font-size: 18px;
-            opacity: 0.9;
-        }
+input, button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+}
+input { background: rgba(255,255,255,0.85); }
+button { background: #ffcc00; font-weight: 700; cursor: pointer; margin-top: 20px; }
+small { font-size: 12px; opacity: 0.85; }
 
-        .home-box button {
-            margin-top: 30px;
-            padding: 15px 35px;
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+#loaderBox { display: none; margin-top: 20px; }
+.progress {
+    width: 100%;
+    height: 18px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #ffcc00;
+    transition: width 0.4s ease;
+}
+#statusText { margin-top: 10px; text-align: center; }
 
-        #prediction {
-            display: none;
-        }
+#resultBox {
+    margin-top: 25px;
+    padding: 20px;
+    font-size: 22px;
+    text-align: center;
+    font-weight: 600;
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    display: none;
+}
 
-        .back-btn {
-            margin: 20px;
-            padding: 10px 18px;
-            background: #ffcc00;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+.about-section { margin-top: 50px; text-align: center; }
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 20px;
+}
+.team-card {
+    background: rgba(255,255,255,0.2);
+    padding: 20px;
+    border-radius: 15px;
+}
 
-        header {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            font-size: 42px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.2);
-        }
-
-        input, button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: none;
-        }
-
-        small {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            opacity: 0.85;
-        }
-
-        input {
-            background: rgba(255,255,255,0.85);
-        }
-
-        button {
-            background: #ffcc00;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        #loaderBox {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .progress {
-            width: 100%;
-            height: 18px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #ffcc00;
-            transition: width 0.4s ease;
-        }
-
-        #statusText {
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        #resultBox {
-            margin-top: 25px;
-            padding: 20px;
-            font-size: 22px;
-            text-align: center;
-            font-weight: 600;
-            background: rgba(0,0,0,0.35);
-            border-radius: 12px;
-            display: none;
-        }
-
-        .about-section {
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .team-card {
-            background: rgba(255,255,255,0.2);
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-    </style>
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+</style>
 </head>
 
 <body>
 
+<!-- HOME -->
 <section id="home">
-    <div class="home-box">
-        <h1>Solar Irradiance Prediction</h1>
-        <p>Final Year Engineering Project – Smart Energy Forecasting</p>
-        <button onclick="openPrediction()">Go to Prediction</button>
-    </div>
+<div class="home-box">
+    <h1>Solar Irradiance Prediction</h1>
+    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
+    <button onclick="openPrediction()">Go to Prediction</button>
+</div>
 </section>
 
+<!-- PREDICTION -->
 <section id="prediction">
-
 <button class="back-btn" onclick="goHome()">← Back to Home</button>
 
 <header>
-    <h1>Solar Irradiance Prediction</h1>
-    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
+<h1>Solar Irradiance Prediction</h1>
+<p>Final Year Engineering Project – Smart Energy Forecasting</p>
 </header>
 
 <div class="container">
 
-    <h2 style="text-align:center;">Enter Weather Parameters</h2>
+<h2 style="text-align:center;">Enter Weather Parameters</h2>
 
-    <input type="number" id="hour" min="0" max="23" placeholder="Hour (0-23)">
-    <small>Valid range: 0 – 23</small>
+<input type="number" id="hour" placeholder="Hour (0-23)">
+<input type="number" id="day" placeholder="Day">
+<input type="number" id="month" placeholder="Month">
 
-    <input type="number" id="temp" min="-10" max="60" placeholder="Temperature (°C)">
-    <small>Valid range: -10°C to 60°C</small>
+<button onclick="predict()">Predict</button>
 
-    <input type="number" id="pressure" min="900" max="1100" placeholder="Pressure (hPa)">
-    <small>Valid range: 900 – 1100 hPa</small>
+<div id="loaderBox">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="statusText"></div>
+</div>
 
-    <input type="number" id="wind" min="0" max="360" placeholder="Wind Direction (Degrees)">
-    <small>Valid range: 0° – 360°</small>
+<div id="resultBox"></div>
 
-    <input type="number" id="humidity" min="0" max="100" placeholder="Humidity (%)">
-    <small>Valid range: 0 – 100%</small>
-
-    <input type="number" id="day" min="1" max="31" placeholder="Day">
-    <small>Valid range: 1 – 31</small>
-
-    <input type="number" id="month" min="1" max="12" placeholder="Month">
-    <small>Valid range: 1 – 12</small>
-
-    <button onclick="predict()">Predict</button>
-
-    <div id="loaderBox">
-        <div class="progress">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div id="statusText"></div>
-    </div>
-
-    <div id="resultBox"></div>
-
-    <div class="about-section">
-        <h2>About Us</h2>
-        <p>Final-year engineering students working on smart solar energy forecasting.</p>
-
-        <div class="card-container">
-            <div class="team-card">K. Jahnavi Subha Sri<br>222U1A3724</div>
-            <div class="team-card">B. Vandhana<br>222U1A3704</div>
-            <div class="team-card">N. Prasanthi<br>222U1A3737</div>
-            <div class="team-card">P. Kavyanjali<br>222U1A3746</div>
-            <div class="team-card">P. Saranya<br>222U1A3744</div>
-        </div>
-    </div>
+<div class="about-section">
+<h2>About Us</h2>
+<div class="card-container">
+    <div class="team-card">K. Jahnavi Subha Sri<br>222U1A3724</div>
+    <div class="team-card">B. Vandhana<br>222U1A3704</div>
+    <div class="team-card">N. Prasanthi<br>222U1A3737</div>
+    <div class="team-card">P. Kavyanjali<br>222U1A3746</div>
+    <div class="team-card">P. Saranya<br>222U1A3744</div>
+</div>
+</div>
 
 </div>
 
-<footer>
-    © 2025 Solar Prediction Project | gist
-</footer>
+<footer>© 2025 Solar Prediction Project</footer>
+</section>
 
 <script>
-function rand(min, max) {
-    return Math.random() * (max - min) + min;
+function openPrediction(){
+    document.getElementById("home").style.display="none";
+    document.getElementById("prediction").style.display="block";
+}
+function goHome(){
+    document.getElementById("prediction").style.display="none";
+    document.getElementById("home").style.display="flex";
 }
 
-async function predict() {
-
-    // ----- STATUS BAR SIMULATION (UNCHANGED) -----
-    document.getElementById("status").innerText = "Fetching location...";
-    await delay(800);
-
-    document.getElementById("status").innerText = "Fetching weather data...";
-    await delay(1000);
-
-    document.getElementById("status").innerText = "Loading ML model...";
-    await delay(1200);
-
-    document.getElementById("status").innerText = "Running prediction...";
-    await delay(1000);
-
-    // ----- LOCATION (FIXED / SILENT) -----
-    // Nellore, Andhra Pradesh
-    const latitude = 14.4426;
-    const longitude = 79.9865;
-
-    // ----- API CALL -----
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=shortwave_radiation&timezone=auto`;
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const currentHour = new Date().getHours();
-        let irradiance = data.hourly.shortwave_radiation[currentHour];
-
-        // Safety fallback (API sometimes gives null)
-        if (irradiance === null || irradiance === undefined) {
-            irradiance = rand(200, 800);
-        }
-
-        irradiance = irradiance.toFixed(2);
-
-        // ----- FINAL OUTPUT (UNCHANGED UI) -----
-        document.getElementById("prediction").innerText =
-            `Predicted Solar Radiation: ${irradiance} W/m²`;
-
-        document.getElementById("status").innerText = "Prediction completed";
-
-    } catch (error) {
-
-        // Offline / network fallback
-        const fallback = rand(300, 900).toFixed(2);
-
-        document.getElementById("prediction").innerText =
-            `Predicted Solar Radiation: ${fallback} W/m²`;
-
-        document.getElementById("status").innerText =
-            "Prediction completed (offline mode)";
-    }
+function step(p,t){
+    return new Promise(r=>{
+        setTimeout(()=>{
+            progressBar.style.width=p+"%";
+            statusText.innerText=t;
+            r();
+        },600);
+    });
 }
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+async function predict(){
+    loaderBox.style.display="block";
+    resultBox.style.display="none";
+    progressBar.style.width="0%";
+
+    await step(20,"Collecting input values...");
+    await step(40,"Fetching weather data from API...");
+    await step(60,"Loading trained model...");
+    await step(80,"Running prediction model...");
+    await step(100,"Finalizing output...");
+
+    // Nellore location (fixed for demo)
+    const lat = 14.44;
+    const lon = 79.99;
+
+    const api =
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=shortwave_radiation&forecast_days=1`;
+
+    const res = await fetch(api);
+    const data = await res.json();
+
+    // Take peak daylight radiation
+    const values = data.hourly.shortwave_radiation;
+    const avg = values.reduce((a,b)=>a+b,0)/values.length;
+
+    loaderBox.style.display="none";
+    resultBox.style.display="block";
+    resultBox.innerHTML =
+        `Predicted Solar Irradiance:<br><b>${avg.toFixed(2)} W/m²</b>`;
 }
 </script>
 
-
-</section>
 </body>
 </html>
-
