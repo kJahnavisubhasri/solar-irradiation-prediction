@@ -21,8 +21,6 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
-/* HOME */
 #home {
     height: 100vh;
     display: flex;
@@ -36,24 +34,18 @@ body {
     border-radius: 20px;
     text-align: center;
     box-shadow: 0 0 25px rgba(0,0,0,0.25);
-    max-width: 600px;
 }
-.home-box h1 { font-size: 40px; font-weight: 700; }
-.home-box p { font-size: 18px; opacity: 0.9; }
 .home-box button {
     margin-top: 30px;
     padding: 15px 35px;
     background: #ffcc00;
-    color: #000;
     border: none;
     border-radius: 12px;
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
 }
-
-/* PREDICTION */
-#prediction { display: none; }
+#prediction { display:none; }
 .back-btn {
     margin: 20px;
     padding: 10px 18px;
@@ -63,13 +55,6 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
-
-header {
-    text-align: center;
-    padding: 40px 20px;
-}
-h1 { font-size: 42px; font-weight: 700; }
-
 .container {
     max-width: 900px;
     margin: auto;
@@ -77,94 +62,56 @@ h1 { font-size: 42px; font-weight: 700; }
     backdrop-filter: blur(10px);
     padding: 30px;
     border-radius: 20px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.2);
 }
-
 input, button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
-    font-size: 16px;
     border-radius: 12px;
     border: none;
 }
-input { background: rgba(255,255,255,0.85); }
-button { background: #ffcc00; font-weight: 700; cursor: pointer; margin-top: 20px; }
-small { font-size: 12px; opacity: 0.85; }
-
-#loaderBox { display: none; margin-top: 20px; }
+button {
+    background: #ffcc00;
+    font-weight: 700;
+}
+#loaderBox { display:none; margin-top:20px; }
 .progress {
-    width: 100%;
-    height: 18px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 10px;
-    overflow: hidden;
+    width:100%;
+    height:18px;
+    background:rgba(255,255,255,0.3);
+    border-radius:10px;
 }
 .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #ffcc00;
-    transition: width 0.4s ease;
+    height:100%;
+    width:0%;
+    background:#ffcc00;
 }
-#statusText { margin-top: 10px; text-align: center; }
-
 #resultBox {
-    margin-top: 25px;
-    padding: 20px;
-    font-size: 22px;
-    text-align: center;
-    font-weight: 600;
-    background: rgba(0,0,0,0.35);
-    border-radius: 12px;
-    display: none;
-}
-
-.about-section { margin-top: 50px; text-align: center; }
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-    gap: 20px;
-}
-.team-card {
-    background: rgba(255,255,255,0.2);
-    padding: 20px;
-    border-radius: 15px;
-}
-
-footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px;
-    font-size: 14px;
-    opacity: 0.8;
+    margin-top:20px;
+    padding:20px;
+    background:rgba(0,0,0,0.35);
+    border-radius:12px;
+    display:none;
+    font-size:22px;
+    text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <section id="home">
 <div class="home-box">
     <h1>Solar Irradiance Prediction</h1>
-    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
+    <p>Final Year Engineering Project</p>
     <button onclick="openPrediction()">Go to Prediction</button>
 </div>
 </section>
 
-<!-- PREDICTION -->
 <section id="prediction">
-<button class="back-btn" onclick="goHome()">← Back to Home</button>
-
-<header>
-<h1>Solar Irradiance Prediction</h1>
-<p>Final Year Engineering Project – Smart Energy Forecasting</p>
-</header>
+<button class="back-btn" onclick="goHome()">← Back</button>
 
 <div class="container">
-
-<h2 style="text-align:center;">Enter Weather Parameters</h2>
-
 <input type="number" id="hour" placeholder="Hour (0-23)">
 <input type="number" id="day" placeholder="Day">
 <input type="number" id="month" placeholder="Month">
@@ -172,44 +119,38 @@ footer {
 <button onclick="predict()">Predict</button>
 
 <div id="loaderBox">
-    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
     <div id="statusText"></div>
 </div>
 
 <div id="resultBox"></div>
-
-<div class="about-section">
-<h2>About Us</h2>
-<div class="card-container">
-    <div class="team-card">K. Jahnavi Subha Sri<br>222U1A3724</div>
-    <div class="team-card">B. Vandhana<br>222U1A3704</div>
-    <div class="team-card">N. Prasanthi<br>222U1A3737</div>
-    <div class="team-card">P. Kavyanjali<br>222U1A3746</div>
-    <div class="team-card">P. Saranya<br>222U1A3744</div>
 </div>
-</div>
-
-</div>
-
-<footer>© 2025 Solar Prediction Project</footer>
 </section>
 
 <script>
+const loaderBox = document.getElementById("loaderBox");
+const progressBar = document.getElementById("progressBar");
+const statusText = document.getElementById("statusText");
+const resultBox = document.getElementById("resultBox");
+
 function openPrediction(){
     document.getElementById("home").style.display="none";
     document.getElementById("prediction").style.display="block";
 }
+
 function goHome(){
     document.getElementById("prediction").style.display="none";
     document.getElementById("home").style.display="flex";
 }
 
-function step(p,t){
-    return new Promise(r=>{
+function step(p,text){
+    return new Promise(resolve=>{
         setTimeout(()=>{
             progressBar.style.width=p+"%";
-            statusText.innerText=t;
-            r();
+            statusText.innerText=text;
+            resolve();
         },600);
     });
 }
@@ -219,30 +160,28 @@ async function predict(){
     resultBox.style.display="none";
     progressBar.style.width="0%";
 
-    await step(20,"Collecting input values...");
-    await step(40,"Fetching weather data from API...");
-    await step(60,"Loading trained model...");
-    await step(80,"Running prediction model...");
-    await step(100,"Finalizing output...");
+    await step(20,"Collecting inputs...");
+    await step(40,"Fetching solar data...");
+    await step(60,"Loading model...");
+    await step(80,"Running prediction...");
+    await step(100,"Done");
 
-    // Nellore location (fixed for demo)
+    // Nellore coordinates
     const lat = 14.44;
     const lon = 79.99;
 
-    const api =
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=shortwave_radiation&forecast_days=1`;
+    const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=shortwave_radiation&forecast_days=1`;
 
-    const res = await fetch(api);
+    const res = await fetch(url);
     const data = await res.json();
 
-    // Take peak daylight radiation
     const values = data.hourly.shortwave_radiation;
     const avg = values.reduce((a,b)=>a+b,0)/values.length;
 
     loaderBox.style.display="none";
     resultBox.style.display="block";
-    resultBox.innerHTML =
-        `Predicted Solar Irradiance:<br><b>${avg.toFixed(2)} W/m²</b>`;
+    resultBox.innerHTML = `Predicted Solar Irradiance:<br><b>${avg.toFixed(2)} W/m²</b>`;
 }
 </script>
 
