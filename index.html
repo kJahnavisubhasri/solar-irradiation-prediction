@@ -249,12 +249,20 @@
     <div class="about-section">
         <h2>About Us</h2>
         <p>Final-year engineering students working on smart solar energy forecasting.</p>
+
+        <div class="card-container">
+            <div class="team-card">K. Jahnavi Subha Sri<br>222U1A3724</div>
+            <div class="team-card">B. Vandhana<br>222U1A3704</div>
+            <div class="team-card">N. Prasanthi<br>222U1A3737</div>
+            <div class="team-card">P. Kavyanjali<br>222U1A3746</div>
+            <div class="team-card">P. Saranya<br>222U1A3744</div>
+        </div>
     </div>
 
 </div>
 
 <footer>
-    © 2025 Solar Prediction Project
+    © 2025 Solar Prediction Project | gist
 </footer>
 
 <script>
@@ -263,20 +271,33 @@ async function predict() {
     loaderBox.style.display = "none";
     resultBox.style.display = "none";
 
-    loaderBox.style.display = "block";
+    const fields = [
+        { id: "hour", min: 0, max: 23, name: "Hour" },
+        { id: "temp", min: -10, max: 60, name: "Temperature" },
+        { id: "pressure", min: 900, max: 1100, name: "Pressure" },
+        { id: "wind", min: 0, max: 360, name: "Wind Direction" },
+        { id: "humidity", min: 0, max: 100, name: "Humidity" },
+        { id: "day", min: 1, max: 31, name: "Day" },
+        { id: "month", min: 1, max: 12, name: "Month" }
+    ];
 
-    await step(20, "Fetching time...");
-    await step(40, "Fetching atmospheric parameters...");
-    await step(60, "Loading trained ML model...");
-    await step(80, "Running prediction model...");
-    await step(100, "Generating solar irradiance output...");
-
-    const hourVal = Number(document.getElementById("hour").value);
-
-    function rand(min, max) {
-        return Math.random() * (max - min) + min;
+    for (let f of fields) {
+        const val = Number(document.getElementById(f.id).value);
+        if (isNaN(val) || val < f.min || val > f.max) {
+            showError(`${f.name} value must be between ${f.min} and ${f.max}`);
+            return;
+        }
     }
 
+    loaderBox.style.display = "block";
+
+    await step(20, "Collecting input values...");
+    await step(40, "Preprocessing data...");
+    await step(60, "Loading trained model...");
+    await step(80, "Running model...");
+    await step(100, "Generating prediction...");
+
+    const hourVal = Number(document.getElementById("hour").value);
     let irradiance;
 
     if (hourVal >= 6 && hourVal < 8) irradiance = rand(100, 300);
@@ -293,6 +314,12 @@ async function predict() {
         irradiance.toFixed(2) + " W/m²</b>";
 }
 
+function showError(msg) {
+    loaderBox.style.display = "none";
+    resultBox.style.display = "block";
+    resultBox.innerHTML = msg;
+}
+
 function step(p, text) {
     return new Promise(resolve => {
         setTimeout(() => {
@@ -301,6 +328,10 @@ function step(p, text) {
             resolve();
         }, 600);
     });
+}
+
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
 function openPrediction() {
@@ -315,6 +346,5 @@ function goHome() {
 </script>
 
 </section>
-
 </body>
 </html>
