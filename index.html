@@ -135,6 +135,11 @@ footer {
 <input type="number" id="hour" placeholder="Hour (auto)">
 <input type="number" id="day" placeholder="Day (auto)">
 <input type="number" id="month" placeholder="Month (auto)">
+<input type="number" id="temp" placeholder="Temperature (°C)" readonly>
+<input type="number" id="humidity" placeholder="Humidity (%)" readonly>
+<input type="number" id="pressure" placeholder="Pressure (hPa)" readonly>
+<input type="number" id="wind" placeholder="Wind Direction (°)" readonly>
+
 
 <button onclick="predict()">Predict</button>
 
@@ -255,6 +260,7 @@ async function predict() {
 
 </body>
 </html>
+
 
 
 
