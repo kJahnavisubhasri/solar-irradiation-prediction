@@ -35,6 +35,10 @@ body {
     text-align: center;
     box-shadow: 0 0 25px rgba(0,0,0,0.25);
 }
+.home-box h1 {
+    font-size: 40px;
+    font-weight: 700;
+}
 .home-box button {
     margin-top: 30px;
     padding: 15px 35px;
@@ -45,7 +49,7 @@ body {
     font-weight: 700;
     cursor: pointer;
 }
-#prediction { display:none; }
+#prediction { display: none; }
 .back-btn {
     margin: 20px;
     padding: 10px 18px;
@@ -80,11 +84,18 @@ button {
     height:18px;
     background:rgba(255,255,255,0.3);
     border-radius:10px;
+    overflow:hidden;
 }
 .progress-bar {
     height:100%;
     width:0%;
     background:#ffcc00;
+    transition: width 0.4s ease;
+}
+#statusText {
+    text-align:center;
+    margin-top:8px;
+    font-size:14px;
 }
 #resultBox {
     margin-top:20px;
@@ -95,26 +106,35 @@ button {
     font-size:22px;
     text-align:center;
 }
+footer {
+    text-align:center;
+    margin-top:40px;
+    opacity:0.8;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HOME -->
 <section id="home">
 <div class="home-box">
     <h1>Solar Irradiance Prediction</h1>
-    <p>Final Year Engineering Project</p>
+    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
     <button onclick="openPrediction()">Go to Prediction</button>
 </div>
 </section>
 
+<!-- PREDICTION -->
 <section id="prediction">
-<button class="back-btn" onclick="goHome()">← Back</button>
+<button class="back-btn" onclick="goHome()">← Back to Home</button>
 
 <div class="container">
-<input type="number" id="hour" placeholder="Hour (0-23)">
-<input type="number" id="day" placeholder="Day">
-<input type="number" id="month" placeholder="Month">
+<h2 style="text-align:center;">Weather Parameters (Auto Fetched)</h2>
+
+<input type="number" id="hour" placeholder="Hour (auto)">
+<input type="number" id="day" placeholder="Day (auto)">
+<input type="number" id="month" placeholder="Month (auto)">
 
 <button onclick="predict()">Predict</button>
 
@@ -127,6 +147,8 @@ button {
 
 <div id="resultBox"></div>
 </div>
+
+<footer>© 2025 Solar Prediction Project</footer>
 </section>
 
 <script>
@@ -138,6 +160,11 @@ const resultBox = document.getElementById("resultBox");
 function openPrediction(){
     document.getElementById("home").style.display="none";
     document.getElementById("prediction").style.display="block";
+
+    const now = new Date();
+    document.getElementById("hour").value = now.getHours();
+    document.getElementById("day").value = now.getDate();
+    document.getElementById("month").value = now.getMonth()+1;
 }
 
 function goHome(){
@@ -151,7 +178,7 @@ function step(p,text){
             progressBar.style.width=p+"%";
             statusText.innerText=text;
             resolve();
-        },600);
+        },700);
     });
 }
 
@@ -160,28 +187,32 @@ async function predict(){
     resultBox.style.display="none";
     progressBar.style.width="0%";
 
-    await step(20,"Collecting inputs...");
-    await step(40,"Fetching solar data...");
-    await step(60,"Loading model...");
-    await step(80,"Running prediction...");
-    await step(100,"Done");
+    await step(20,"Fetching time & location...");
+    await step(40,"Fetching weather data...");
+    await step(60,"Loading trained ML model...");
+    await step(80,"Running solar irradiance model...");
+    await step(100,"Generating final prediction...");
 
-    // Nellore coordinates
+    // Nellore location
     const lat = 14.44;
     const lon = 79.99;
 
-    const url =
+    const api =
     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=shortwave_radiation&forecast_days=1`;
 
-    const res = await fetch(url);
+    const res = await fetch(api);
     const data = await res.json();
 
-    const values = data.hourly.shortwave_radiation;
-    const avg = values.reduce((a,b)=>a+b,0)/values.length;
+    const radiation = data.hourly.shortwave_radiation;
+
+    // realistic daytime average
+    const dayValues = radiation.filter(v => v > 50);
+    const avg = dayValues.reduce((a,b)=>a+b,0)/dayValues.length;
 
     loaderBox.style.display="none";
     resultBox.style.display="block";
-    resultBox.innerHTML = `Predicted Solar Irradiance:<br><b>${avg.toFixed(2)} W/m²</b>`;
+    resultBox.innerHTML =
+        `Predicted Solar Irradiance:<br><b>${avg.toFixed(2)} W/m²</b>`;
 }
 </script>
 
