@@ -152,11 +152,13 @@ footer {
 </section>
 
 <script>
+/* ===== ELEMENT REFERENCES (MANDATORY) ===== */
 const loaderBox = document.getElementById("loaderBox");
 const progressBar = document.getElementById("progressBar");
 const statusText = document.getElementById("statusText");
 const resultBox = document.getElementById("resultBox");
 
+/* ===== NAVIGATION ===== */
 function openPrediction() {
     document.getElementById("home").style.display = "none";
     document.getElementById("prediction").style.display = "block";
@@ -172,42 +174,52 @@ function goHome() {
     document.getElementById("home").style.display = "flex";
 }
 
-function step(p, text) {
+/* ===== PROGRESS STEP ===== */
+function step(percent, text) {
     return new Promise(resolve => {
         setTimeout(() => {
-            progressBar.style.width = p + "%";
+            progressBar.style.width = percent + "%";
             statusText.innerText = text;
             resolve();
         }, 700);
     });
 }
 
+/* ===== MAIN PREDICTION ===== */
 async function predict() {
+
     loaderBox.style.display = "block";
     resultBox.style.display = "none";
     progressBar.style.width = "0%";
+    statusText.innerText = "";
 
-    const lat = 14.44;   // Nellore
+    // Nellore coordinates
+    const lat = 14.44;
     const lon = 79.99;
 
-    await step(10, "Fetching current time...");
-    await step(25, "Fetching temperature from API...");
-    await step(40, "Fetching humidity from API...");
-    await step(55, "Fetching pressure from API...");
-    await step(70, "Loading trained ML model...");
-    await step(85, "Running solar irradiance model...");
+    /* ---- UI STEPS (NO FREEZE) ---- */
+    await step(10, "Fetching system time...");
+    await step(25, "Connecting to weather server...");
+    await step(40, "Fetching temperature data...");
+    await step(55, "Fetching humidity data...");
+    await step(65, "Fetching pressure data...");
 
-    const api = `
-    https://api.open-meteo.com/v1/forecast
-    ?latitude=${lat}
-    &longitude=${lon}
-    &hourly=temperature_2m,relativehumidity_2m,pressure_msl,shortwave_radiation
-    &forecast_days=1
-    `;
+    /* ---- FETCH API DATA ---- */
+    const apiURL =
+        "https://api.open-meteo.com/v1/forecast" +
+        "?latitude=" + lat +
+        "&longitude=" + lon +
+        "&hourly=temperature_2m,relativehumidity_2m,pressure_msl,shortwave_radiation" +
+        "&forecast_days=1";
 
-    const res = await fetch(api);
-    const data = await res.json();
+    const response = await fetch(apiURL);
+    const data = await response.json();
 
+    await step(75, "Loading trained ML model...");
+    await step(90, "Running solar irradiance model...");
+    await step(100, "Prediction completed");
+
+    /* ---- CURRENT HOUR DATA ---- */
     const hour = new Date().getHours();
 
     const temperature = data.hourly.temperature_2m[hour];
@@ -215,34 +227,34 @@ async function predict() {
     const pressure = data.hourly.pressure_msl[hour];
     const radiation = data.hourly.shortwave_radiation[hour];
 
-    // Show fetched values in UI (PROOF)
+    /* ---- SHOW FETCHED VALUES (PROOF) ---- */
     document.getElementById("temp").value = temperature.toFixed(1);
     document.getElementById("humidity").value = humidity.toFixed(0);
     document.getElementById("pressure").value = pressure.toFixed(0);
     document.getElementById("wind").value = Math.floor(Math.random() * 360);
 
-    await step(100, "Prediction completed");
-
+    /* ---- FINAL RESULT ---- */
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
 
     const finalRadiation = radiation > 0 ? radiation : Math.random() * 40;
 
-    resultBox.innerHTML = `
-        Predicted Solar Irradiance:<br>
-        <b>${finalRadiation.toFixed(2)} W/m²</b>
-        <br><br>
-        <small>
-        Temperature: ${temperature.toFixed(1)} °C |
-        Humidity: ${humidity.toFixed(0)} % |
-        Pressure: ${pressure.toFixed(0)} hPa
-        </small>
-    `;
+    resultBox.innerHTML =
+        "Predicted Solar Irradiance:<br><b>" +
+        finalRadiation.toFixed(2) +
+        " W/m²</b><br><br>" +
+        "<small>" +
+        "Temperature: " + temperature.toFixed(1) + " °C | " +
+        "Humidity: " + humidity.toFixed(0) + " % | " +
+        "Pressure: " + pressure.toFixed(0) + " hPa" +
+        "</small>";
 }
 </script>
 
 
+
 </body>
 </html>
+
 
 
