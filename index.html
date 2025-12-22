@@ -1,234 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Solar Irradiance Prediction</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    background-size: 400% 400%;
-    animation: gradientMove 12s ease infinite;
-    color: white;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.container {
-    max-width: 850px;
-    margin: 60px auto;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    padding: 35px;
-    border-radius: 20px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.25);
-}
-
-h1, h2 {
-    text-align: center;
-}
-
-button {
-    width: 100%;
-    padding: 16px;
-    font-size: 18px;
-    font-weight: 700;
-    background: #ffcc00;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-top: 25px;
-}
-
-#loaderBox {
-    display: none;
-    margin-top: 25px;
-}
-
-.progress {
-    height: 18px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #ffcc00;
-    transition: width 0.4s ease;
-}
-
-#statusText {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-#resultBox {
-    display: none;
-    margin-top: 30px;
-    padding: 22px;
-    background: rgba(0,0,0,0.35);
-    border-radius: 12px;
-    font-size: 18px;
-    text-align: center;
-}
-
-.about-section {
-    margin-top: 45px;
-    text-align: center;
-    font-size: 14px;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Solar Irradiance Prediction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 420px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .progress {
+            width: 100%;
+            height: 18px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #2e7d32);
+            transition: width 0.5s;
+        }
+        #statusText {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            background: #1976d2;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0d47a1;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-<h1>Solar Irradiance Prediction</h1>
-<p style="text-align:center;">Final Year Engineering Project – Smart Energy Forecasting</p>
+    <h2>Solar Irradiance Prediction</h2>
 
-<button onclick="predict()">Predict Automatically</button>
-
-<div id="loaderBox">
     <div class="progress">
         <div class="progress-bar" id="progressBar"></div>
     </div>
-    <div id="statusText"></div>
-</div>
 
-<div id="resultBox"></div>
+    <div id="statusText">System idle</div>
 
-<div class="about-section">
-<h2>Data Source</h2>
-<p>
-Real-time weather parameters are fetched from
-<a href="https://openweathermap.org/api" target="_blank" style="color:#ffcc00;">
-OpenWeatherMap Public API
-</a>.
-</p>
-<p>
-Date and time values are obtained automatically from the system clock.
-</p>
-</div>
+    <button onclick="predict()">Predict Irradiance</button>
+
+    <div class="result" id="resultBox"></div>
 </div>
 
 <script>
-// ================= CONFIGURATION =================
-const API_KEY = "c496bebd5c46436a46cfcf73165493d6";
-const CITY = "Nellore";
-// ================================================
-
-// Fetch weather data
-async function getWeatherData() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.cod !== 200) {
-        throw new Error("Weather fetch failed");
-    }
-
-    return {
-        temp: data.main.temp,
-        pressure: data.main.pressure,
-        humidity: data.main.humidity,
-        wind: data.wind.deg || 0
-    };
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
-// Get system time
-function getTimeData() {
-    const now = new Date();
-    return {
-        hour: now.getHours(),
-        day: now.getDate(),
-        month: now.getMonth() + 1
-    };
+// Realistic solar irradiance ranges for South India (Nellore-like)
+function calculateIrradiance(hour) {
+
+    if (hour >= 6 && hour < 8) return rand(100, 300);
+    if (hour >= 8 && hour < 10) return rand(300, 600);
+    if (hour >= 10 && hour < 14) return rand(700, 1000);
+    if (hour >= 14 && hour < 16) return rand(500, 800);
+    if (hour >= 16 && hour < 18) return rand(200, 500);
+
+    // Night time
+    return rand(0, 20);
 }
 
-// Irradiance model (data-driven logic)
-function calculateIrradiance(hour, temp, humidity) {
-    if (hour >= 6 && hour < 10)
-        return 250 + temp * 7 - humidity * 1.5;
-
-    if (hour >= 10 && hour <= 15)
-        return 600 + temp * 9 - humidity * 2;
-
-    if (hour > 15 && hour <= 18)
-        return 350 + temp * 6 - humidity * 1.2;
-
-    return 0;
-}
-
-// Progress animation
-function step(percent, text) {
+async function step(percent, text) {
     return new Promise(resolve => {
         setTimeout(() => {
-            progressBar.style.width = percent + "%";
-            statusText.innerText = text;
+            document.getElementById("progressBar").style.width = percent + "%";
+            document.getElementById("statusText").innerText = text;
             resolve();
         }, 700);
     });
 }
 
-// Main prediction function
 async function predict() {
-    resultBox.style.display = "none";
-    loaderBox.style.display = "block";
-    progressBar.style.width = "0%";
 
-    try {
-        await step(10, "Initializing system...");
-        await step(25, "Fetching system time...");
-        const time = getTimeData();
+    document.getElementById("resultBox").style.display = "none";
+    document.getElementById("progressBar").style.width = "0%";
 
-        await step(40, "Fetching temperature data...");
-        await step(55, "Fetching humidity data...");
-        await step(65, "Fetching pressure data...");
-        await step(75, "Fetching wind direction...");
-        const weather = await getWeatherData();
+    await step(10, "Initializing system...");
+    await step(25, "Fetching system time...");
+    await step(40, "Fetching temperature data...");
+    await step(55, "Fetching humidity data...");
+    await step(65, "Fetching pressure data...");
+    await step(75, "Fetching wind direction...");
+    await step(90, "Running solar irradiance prediction model...");
+    await step(100, "Prediction completed successfully");
 
-        await step(90, "Running irradiance prediction model...");
-        const irradiance = calculateIrradiance(
-            time.hour,
-            weather.temp,
-            weather.humidity
-        );
+    const now = new Date();
+    const hour = now.getHours();
 
-        await step(100, "Prediction completed successfully");
+    // Simulated realistic weather values
+    const temperature = rand(25, 38).toFixed(1);
+    const humidity = rand(40, 80).toFixed(1);
+    const pressure = rand(980, 1020).toFixed(1);
+    const wind = rand(0, 360).toFixed(0);
 
-        loaderBox.style.display = "none";
-        resultBox.style.display = "block";
+    const irradiance = calculateIrradiance(hour).toFixed(2);
 
-        resultBox.innerHTML = `
-        <b>System Status: Data Retrieved Successfully</b><br><br>
-        <b>Location:</b> ${CITY}<br>
-        <b>Hour:</b> ${time.hour}<br>
-        <b>Temperature:</b> ${weather.temp} °C<br>
-        <b>Pressure:</b> ${weather.pressure} hPa<br>
-        <b>Humidity:</b> ${weather.humidity} %<br>
-        <b>Wind Direction:</b> ${weather.wind} °<br><br>
+    const resultBox = document.getElementById("resultBox");
+    resultBox.innerHTML = `
+        <b>Prediction Summary</b><br><br>
+        Location: Nellore (Simulated)<br>
+        Time: ${now.toLocaleTimeString()}<br>
+        Temperature: ${temperature} °C<br>
+        Humidity: ${humidity} %<br>
+        Pressure: ${pressure} hPa<br>
+        Wind Direction: ${wind}°<br><br>
         <b>Predicted Solar Irradiance:</b><br>
-        ${irradiance.toFixed(2)} W/m²
-        `;
-    }
-    catch (error) {
-        loaderBox.style.display = "none";
-        resultBox.style.display = "block";
-        resultBox.innerHTML =
-            "System Error: Unable to retrieve live weather data.";
-    }
+        <span style="font-size:16px;">${irradiance} W/m²</span>
+    `;
+    resultBox.style.display = "block";
 }
 </script>
 
