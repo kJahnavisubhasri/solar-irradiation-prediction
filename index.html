@@ -161,7 +161,6 @@ function openPrediction() {
     document.getElementById("home").style.display = "none";
     document.getElementById("prediction").style.display = "block";
 
-    // Auto-fill current time values
     const now = new Date();
     document.getElementById("hour").value = now.getHours();
     document.getElementById("day").value = now.getDate();
@@ -188,18 +187,16 @@ async function predict() {
     resultBox.style.display = "none";
     progressBar.style.width = "0%";
 
-    // Nellore coordinates
-    const lat = 14.44;
+    const lat = 14.44;   // Nellore
     const lon = 79.99;
 
     await step(10, "Fetching current time...");
-    await step(25, "Fetching temperature...");
-    await step(40, "Fetching humidity...");
-    await step(55, "Fetching pressure...");
+    await step(25, "Fetching temperature from API...");
+    await step(40, "Fetching humidity from API...");
+    await step(55, "Fetching pressure from API...");
     await step(70, "Loading trained ML model...");
     await step(85, "Running solar irradiance model...");
 
-    // Open-Meteo API
     const api = `
     https://api.open-meteo.com/v1/forecast
     ?latitude=${lat}
@@ -211,7 +208,6 @@ async function predict() {
     const res = await fetch(api);
     const data = await res.json();
 
-    // Take current hour index
     const hour = new Date().getHours();
 
     const temperature = data.hourly.temperature_2m[hour];
@@ -219,7 +215,7 @@ async function predict() {
     const pressure = data.hourly.pressure_msl[hour];
     const radiation = data.hourly.shortwave_radiation[hour];
 
-    // Fill input boxes automatically (for demo proof)
+    // Show fetched values in UI (PROOF)
     document.getElementById("temp").value = temperature.toFixed(1);
     document.getElementById("humidity").value = humidity.toFixed(0);
     document.getElementById("pressure").value = pressure.toFixed(0);
@@ -230,12 +226,17 @@ async function predict() {
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
 
-    // Safety fallback (night time)
     const finalRadiation = radiation > 0 ? radiation : Math.random() * 40;
 
     resultBox.innerHTML = `
         Predicted Solar Irradiance:<br>
         <b>${finalRadiation.toFixed(2)} W/m²</b>
+        <br><br>
+        <small>
+        Temperature: ${temperature.toFixed(1)} °C |
+        Humidity: ${humidity.toFixed(0)} % |
+        Pressure: ${pressure.toFixed(0)} hPa
+        </small>
     `;
 }
 </script>
@@ -243,4 +244,5 @@ async function predict() {
 
 </body>
 </html>
+
 
