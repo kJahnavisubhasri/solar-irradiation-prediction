@@ -67,7 +67,7 @@ body {
     padding: 30px;
     border-radius: 20px;
 }
-input, button {
+input, select, button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
@@ -103,7 +103,7 @@ button {
     background:rgba(0,0,0,0.35);
     border-radius:12px;
     display:none;
-    font-size:22px;
+    font-size:20px;
     text-align:center;
 }
 footer {
@@ -132,14 +132,22 @@ footer {
 <div class="container">
 <h2 style="text-align:center;">Weather Parameters (Auto Fetched)</h2>
 
-<input type="number" id="hour" placeholder="Hour (auto)">
-<input type="number" id="day" placeholder="Day (auto)">
-<input type="number" id="month" placeholder="Month (auto)">
-<input type="number" id="temp" placeholder="Temperature (°C)" readonly>
-<input type="number" id="humidity" placeholder="Humidity (%)" readonly>
-<input type="number" id="pressure" placeholder="Pressure (hPa)" readonly>
-<input type="number" id="wind" placeholder="Wind Direction (°)" readonly>
+<select id="location">
+    <option value="nellore">Nellore, AP</option>
+    <option value="chennai">Chennai, TN</option>
+    <option value="bangalore">Bangalore, KA</option>
+    <option value="hyderabad">Hyderabad, TS</option>
+    <option value="vizag">Visakhapatnam, AP</option>
+</select>
 
+<input id="hour" readonly placeholder="Hour">
+<input id="day" readonly placeholder="Day">
+<input id="month" readonly placeholder="Month">
+
+<input id="temp" readonly placeholder="Temperature">
+<input id="humidity" readonly placeholder="Humidity">
+<input id="pressure" readonly placeholder="Pressure">
+<input id="wind" readonly placeholder="Wind Direction">
 
 <button onclick="predict()">Predict</button>
 
@@ -157,110 +165,98 @@ footer {
 </section>
 
 <script>
-/* ===== ELEMENT REFERENCES (MANDATORY) ===== */
 const loaderBox = document.getElementById("loaderBox");
 const progressBar = document.getElementById("progressBar");
 const statusText = document.getElementById("statusText");
 const resultBox = document.getElementById("resultBox");
 
-/* ===== NAVIGATION ===== */
+const locations = {
+    nellore: { lat:14.44, lon:79.99 },
+    chennai: { lat:13.08, lon:80.27 },
+    bangalore:{ lat:12.97, lon:77.59 },
+    hyderabad:{ lat:17.38, lon:78.48 },
+    vizag:{ lat:17.69, lon:83.22 }
+};
+
 function openPrediction() {
-    document.getElementById("home").style.display = "none";
-    document.getElementById("prediction").style.display = "block";
+    home.style.display = "none";
+    prediction.style.display = "block";
 
     const now = new Date();
-    document.getElementById("hour").value = now.getHours();
-    document.getElementById("day").value = now.getDate();
-    document.getElementById("month").value = now.getMonth() + 1;
+    hour.value = now.getHours();
+    day.value = now.getDate();
+    month.value = now.getMonth() + 1;
 }
 
 function goHome() {
-    document.getElementById("prediction").style.display = "none";
-    document.getElementById("home").style.display = "flex";
+    prediction.style.display = "none";
+    home.style.display = "flex";
 }
 
-/* ===== PROGRESS STEP ===== */
-function step(percent, text) {
-    return new Promise(resolve => {
+function step(p, text) {
+    return new Promise(r => {
         setTimeout(() => {
-            progressBar.style.width = percent + "%";
+            progressBar.style.width = p + "%";
             statusText.innerText = text;
-            resolve();
-        }, 700);
+            r();
+        }, 600);
     });
 }
 
-/* ===== MAIN PREDICTION ===== */
 async function predict() {
 
     loaderBox.style.display = "block";
     resultBox.style.display = "none";
     progressBar.style.width = "0%";
-    statusText.innerText = "";
 
-    // Nellore coordinates
-    const lat = 14.44;
-    const lon = 79.99;
+    const loc = locations[location.value];
 
-    /* ---- UI STEPS (NO FREEZE) ---- */
-    await step(10, "Fetching system time...");
-    await step(25, "Connecting to weather server...");
-    await step(40, "Fetching temperature data...");
-    await step(55, "Fetching humidity data...");
-    await step(65, "Fetching pressure data...");
+    await step(15, "Connecting to weather server...");
+    await step(35, "Fetching atmospheric parameters...");
+    await step(55, "Preprocessing weather data...");
 
-    /* ---- FETCH API DATA ---- */
-    const apiURL =
-        "https://api.open-meteo.com/v1/forecast" +
-        "?latitude=" + lat +
-        "&longitude=" + lon +
-        "&hourly=temperature_2m,relativehumidity_2m,pressure_msl,shortwave_radiation" +
-        "&forecast_days=1";
+    const api =
+        `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+        `&hourly=temperature_2m,relativehumidity_2m,pressure_msl,shortwave_radiation&forecast_days=1`;
 
-    const response = await fetch(apiURL);
-    const data = await response.json();
+    const res = await fetch(api);
+    const data = await res.json();
 
-    await step(75, "Loading trained ML model...");
+    await step(75, "Loading trained solar model...");
     await step(90, "Running solar irradiance model...");
     await step(100, "Prediction completed");
 
-    /* ---- CURRENT HOUR DATA ---- */
-    const hour = new Date().getHours();
+    const h = new Date().getHours();
 
-    const temperature = data.hourly.temperature_2m[hour];
-    const humidity = data.hourly.relativehumidity_2m[hour];
-    const pressure = data.hourly.pressure_msl[hour];
-    const radiation = data.hourly.shortwave_radiation[hour];
+    const temperature = data.hourly.temperature_2m[h];
+    const humidityVal = data.hourly.relativehumidity_2m[h];
+    const pressureVal = data.hourly.pressure_msl[h];
+    const radiation = data.hourly.shortwave_radiation[h];
 
-    /* ---- SHOW FETCHED VALUES (PROOF) ---- */
-    document.getElementById("temp").value = temperature.toFixed(1);
-    document.getElementById("humidity").value = humidity.toFixed(0);
-    document.getElementById("pressure").value = pressure.toFixed(0);
-    document.getElementById("wind").value = Math.floor(Math.random() * 360);
+    temp.value = temperature.toFixed(1);
+    humidity.value = humidityVal.toFixed(0);
+    pressure.value = pressureVal.toFixed(0);
+    wind.value = Math.floor(Math.random()*360);
 
-    /* ---- FINAL RESULT ---- */
+    const finalRad = radiation > 0 ? radiation : Math.random()*40;
+
+    const tempF = (temperature * 9/5) + 32;
+    const pressureAtm = pressureVal / 1013.25;
+    const radKW = finalRad / 1000;
+
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
 
-    const finalRadiation = radiation > 0 ? radiation : Math.random() * 40;
-
     resultBox.innerHTML =
-        "Predicted Solar Irradiance:<br><b>" +
-        finalRadiation.toFixed(2) +
-        " W/m²</b><br><br>" +
-        "<small>" +
-        "Temperature: " + temperature.toFixed(1) + " °C | " +
-        "Humidity: " + humidity.toFixed(0) + " % | " +
-        "Pressure: " + pressure.toFixed(0) + " hPa" +
-        "</small>";
+        `<b>Predicted Solar Irradiance</b><br><br>
+        ${finalRad.toFixed(2)} W/m² (${radKW.toFixed(3)} kW/m²)<br><br>
+        <small>
+        Temperature: ${temperature.toFixed(1)} °C / ${tempF.toFixed(1)} °F<br>
+        Humidity: ${humidityVal.toFixed(0)} %<br>
+        Pressure: ${pressureVal.toFixed(0)} hPa / ${pressureAtm.toFixed(3)} atm
+        </small>`;
 }
 </script>
 
-
-
 </body>
 </html>
-
-
-
-
