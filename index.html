@@ -69,7 +69,7 @@ body {
     border-radius: 20px;
 }
 
-input, button {
+input, select, button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
@@ -133,6 +133,14 @@ button {
 <div class="container">
 <h2 style="text-align:center;">Auto Parameters</h2>
 
+<!-- ✅ LOCATION ADDED -->
+<select id="location">
+    <option>Nellore</option>
+    <option>Chennai</option>
+    <option>Hyderabad</option>
+    <option>Bangalore</option>
+</select>
+
 <input id="hour" readonly placeholder="Hour">
 <input id="day" readonly placeholder="Day">
 <input id="month" readonly placeholder="Month">
@@ -151,20 +159,19 @@ button {
 </section>
 
 <script>
-/* ===== DOM BINDING (CRITICAL FIX) ===== */
 const home = document.getElementById("home");
 const prediction = document.getElementById("prediction");
 
 const hourEl = document.getElementById("hour");
 const dayEl = document.getElementById("day");
 const monthEl = document.getElementById("month");
+const locationEl = document.getElementById("location");
 
 const loaderBox = document.getElementById("loaderBox");
 const progressBar = document.getElementById("progressBar");
 const statusText = document.getElementById("statusText");
 const resultBox = document.getElementById("resultBox");
 
-/* ===== NAVIGATION ===== */
 document.getElementById("goBtn").onclick = () => {
     home.style.display = "none";
     prediction.style.display = "block";
@@ -180,7 +187,6 @@ document.getElementById("backBtn").onclick = () => {
     home.style.display = "flex";
 };
 
-/* ===== HELPERS ===== */
 function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -201,10 +207,9 @@ function solarByTime(hour) {
     if (hour >= 8 && hour < 10) return rand(400, 650);
     if (hour >= 6 && hour < 8) return rand(100, 300);
     if (hour >= 16 && hour < 18) return rand(300, 500);
-    return rand(30, 90); // night
+    return rand(30, 90);
 }
 
-/* ===== PREDICTION ===== */
 document.getElementById("predictBtn").onclick = async () => {
 
     loaderBox.style.display = "block";
@@ -220,10 +225,14 @@ document.getElementById("predictBtn").onclick = async () => {
 
     const tempC = rand(26, 38);
     const tempF = (tempC * 9/5) + 32;
-    const humidity = rand(40, 80);
-    const pressure = rand(995, 1025);
 
-    const irradiance = solarByTime(h); // 🔒 NEVER ZERO
+    const humidity = rand(40, 80);
+
+    const pressureHpa = rand(995, 1025);
+    const pressureMmHg = pressureHpa * 0.75006;
+    const pressureAtm = pressureHpa / 1013.25;
+
+    const irradiance = solarByTime(h);
 
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
@@ -232,9 +241,12 @@ document.getElementById("predictBtn").onclick = async () => {
         <b>Predicted Solar Irradiance</b><br>
         ${irradiance.toFixed(2)} W/m²<br><br>
         <small>
-        Temp: ${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F)<br>
+        Location: ${locationEl.value}<br>
+        Temperature: ${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F)<br>
         Humidity: ${humidity.toFixed(0)} %<br>
-        Pressure: ${pressure.toFixed(0)} hPa
+        Pressure: ${pressureHpa.toFixed(0)} hPa |
+        ${pressureMmHg.toFixed(1)} mmHg |
+        ${pressureAtm.toFixed(3)} atm
         </small>
     `;
 };
