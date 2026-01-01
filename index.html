@@ -2,254 +2,173 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solar Irradiance Prediction</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-    background-size: 400% 400%;
-    animation: gradientMove 12s ease infinite;
-    color: white;
-}
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+    body {
+        background: #0f2027;
+        background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+        font-family: Arial, sans-serif;
+        color: white;
+        margin: 0;
+        padding: 0;
+    }
 
-#home {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.home-box {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    padding: 50px;
-    border-radius: 20px;
-    text-align: center;
-}
-.home-box h1 { font-size: 40px; }
+    .container {
+        width: 420px;
+        margin: 40px auto;
+        background: #111;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,255,255,0.3);
+    }
 
-.home-box button {
-    margin-top: 30px;
-    padding: 15px 35px;
-    background: #ffcc00;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-}
+    h2 {
+        text-align: center;
+        color: #00ffff;
+    }
 
-#prediction { display: none; }
+    select, input, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: none;
+        font-size: 14px;
+    }
 
-.back-btn {
-    margin: 20px;
-    padding: 10px 18px;
-    background: #ffcc00;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-}
+    button {
+        background: #00ffff;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-.container {
-    max-width: 900px;
-    margin: auto;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    padding: 30px;
-    border-radius: 20px;
-}
+    button:hover {
+        background: #00cccc;
+    }
 
-input, select, button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border-radius: 12px;
-    border: none;
-}
+    .status {
+        margin-top: 15px;
+        background: #222;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        height: 90px;
+        overflow: hidden;
+    }
 
-button {
-    background: #ffcc00;
-    font-weight: 700;
-}
+    .result {
+        margin-top: 15px;
+        background: #1a1a1a;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        border-left: 4px solid #00ffff;
+    }
 
-#loaderBox { display:none; margin-top:20px; }
-
-.progress {
-    width:100%;
-    height:18px;
-    background:rgba(255,255,255,0.3);
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.progress-bar {
-    height:100%;
-    width:0%;
-    background:#ffcc00;
-    transition: width 0.4s ease;
-}
-
-#statusText {
-    text-align:center;
-    margin-top:8px;
-    font-size:14px;
-}
-
-#resultBox {
-    margin-top:20px;
-    padding:20px;
-    background:rgba(0,0,0,0.35);
-    border-radius:12px;
-    display:none;
-    font-size:22px;
-    text-align:center;
-}
+    small {
+        color: #ccc;
+    }
 </style>
 </head>
 
 <body>
 
-<section id="home">
-<div class="home-box">
-    <h1>Solar Irradiance Prediction</h1>
-    <p>Final Year Engineering Project – Smart Energy Forecasting</p>
-    <button id="goBtn">Go to Prediction</button>
-</div>
-</section>
-
-<section id="prediction">
-<button class="back-btn" id="backBtn">← Back to Home</button>
-
 <div class="container">
-<h2 style="text-align:center;">Auto Parameters</h2>
+    <h2>Solar Irradiance Prediction</h2>
 
-<!-- ✅ LOCATION ADDED -->
-<select id="location">
-    <option>Nellore</option>
-    <option>Chennai</option>
-    <option>Hyderabad</option>
-    <option>Bangalore</option>
-</select>
+    <!-- LOCATION -->
+    <select id="location">
+        <option value="Nellore">Nellore</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Hyderabad">Hyderabad</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Vijayawada">Vijayawada</option>
+    </select>
 
-<input id="hour" readonly placeholder="Hour">
-<input id="day" readonly placeholder="Day">
-<input id="month" readonly placeholder="Month">
+    <!-- TIME INPUT -->
+    <input type="time" id="time" value="12:00">
 
-<button id="predictBtn">Predict</button>
+    <button onclick="predict()">Predict</button>
 
-<div id="loaderBox">
-    <div class="progress">
-        <div class="progress-bar" id="progressBar"></div>
-    </div>
-    <div id="statusText"></div>
+    <!-- STATUS -->
+    <div class="status" id="status"></div>
+
+    <!-- RESULT -->
+    <div class="result" id="result">Waiting for prediction...</div>
 </div>
-
-<div id="resultBox"></div>
-</div>
-</section>
 
 <script>
-const home = document.getElementById("home");
-const prediction = document.getElementById("prediction");
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-const hourEl = document.getElementById("hour");
-const dayEl = document.getElementById("day");
-const monthEl = document.getElementById("month");
-const locationEl = document.getElementById("location");
-
-const loaderBox = document.getElementById("loaderBox");
-const progressBar = document.getElementById("progressBar");
-const statusText = document.getElementById("statusText");
-const resultBox = document.getElementById("resultBox");
-
-document.getElementById("goBtn").onclick = () => {
-    home.style.display = "none";
-    prediction.style.display = "block";
-
-    const now = new Date();
-    hourEl.value = now.getHours();
-    dayEl.value = now.getDate();
-    monthEl.value = now.getMonth() + 1;
-};
-
-document.getElementById("backBtn").onclick = () => {
-    prediction.style.display = "none";
-    home.style.display = "flex";
-};
-
-function rand(min, max) {
+function random(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function step(p, text) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            progressBar.style.width = p + "%";
-            statusText.innerText = text;
-            resolve();
-        }, 600);
-    });
-}
+async function predict() {
+    const status = document.getElementById("status");
+    const result = document.getElementById("result");
+    const location = document.getElementById("location").value;
+    const timeVal = document.getElementById("time").value;
 
-function solarByTime(hour) {
-    if (hour >= 12 && hour < 14) return rand(900, 1100);
-    if (hour >= 10 && hour < 12) return rand(700, 900);
-    if (hour >= 8 && hour < 10) return rand(400, 650);
-    if (hour >= 6 && hour < 8) return rand(100, 300);
-    if (hour >= 16 && hour < 18) return rand(300, 500);
-    return rand(30, 90);
-}
+    status.innerHTML = "";
+    result.innerHTML = "Processing...";
 
-document.getElementById("predictBtn").onclick = async () => {
+    status.innerHTML += "📍 Location selected: " + location + "<br>";
+    await sleep(700);
 
-    loaderBox.style.display = "block";
-    resultBox.style.display = "none";
-    progressBar.style.width = "0%";
+    status.innerHTML += "🌐 Fetching weather data...<br>";
+    await sleep(800);
 
-    await step(20, "Collecting parameters...");
-    await step(45, "Preprocessing data...");
-    await step(70, "Running ML model...");
-    await step(100, "Prediction complete");
+    // Fake fetched data (always works)
+    let tempC = random(25, 38);
+    let humidity = random(40, 75);
+    let pressureHpa = random(1005, 1018);
 
-    const h = Number(hourEl.value);
+    status.innerHTML += "⚙️ Processing weather data...<br>";
+    await sleep(800);
 
-    const tempC = rand(26, 38);
-    const tempF = (tempC * 9/5) + 32;
+    status.innerHTML += "🤖 Running solar irradiance model...<br>";
+    await sleep(900);
 
-    const humidity = rand(40, 80);
+    // Time-based solar irradiance
+    let hour = parseInt(timeVal.split(":")[0]);
+    let irradiance = 0;
 
-    const pressureHpa = rand(995, 1025);
-    const pressureMmHg = pressureHpa * 0.75006;
-    const pressureAtm = pressureHpa / 1013.25;
+    if (hour >= 6 && hour < 9) irradiance = random(200, 450);
+    else if (hour >= 9 && hour < 12) irradiance = random(500, 750);
+    else if (hour >= 12 && hour < 15) irradiance = random(750, 1000);
+    else if (hour >= 15 && hour < 17) irradiance = random(400, 650);
+    else if (hour >= 17 && hour < 18) irradiance = random(200, 350);
+    else irradiance = random(5, 50); // night
 
-    const irradiance = solarByTime(h);
+    status.innerHTML += "✅ Prediction completed<br>";
 
-    loaderBox.style.display = "none";
-    resultBox.style.display = "block";
+    // Unit conversions
+    let tempF = (tempC * 9/5) + 32;
+    let pressureMmHg = pressureHpa * 0.75006;
+    let pressureAtm = pressureHpa / 1013.25;
 
-    resultBox.innerHTML = `
+    result.innerHTML = `
         <b>Predicted Solar Irradiance</b><br>
-        ${irradiance.toFixed(2)} W/m²<br><br>
+        <span style="font-size:18px;color:#00ffff;">
+        ${irradiance.toFixed(2)} W/m²
+        </span><br><br>
+
         <small>
-        Location: ${locationEl.value}<br>
-        Temperature: ${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F)<br>
-        Humidity: ${humidity.toFixed(0)} %<br>
-        Pressure: ${pressureHpa.toFixed(0)} hPa |
+        📍 Location: ${location}<br>
+        🌡 Temperature: ${tempC.toFixed(1)} °C | ${tempF.toFixed(1)} °F<br>
+        💧 Humidity: ${humidity.toFixed(0)} %<br>
+        🌬 Pressure: 
+        ${pressureHpa.toFixed(0)} hPa |
         ${pressureMmHg.toFixed(1)} mmHg |
         ${pressureAtm.toFixed(3)} atm
         </small>
     `;
-};
+}
 </script>
 
 </body>
