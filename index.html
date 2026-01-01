@@ -21,6 +21,7 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+
 #home {
     height: 100vh;
     display: flex;
@@ -39,6 +40,9 @@ body {
     font-size: 40px;
     font-weight: 700;
 }
+.home-box p {
+    opacity: 0.9;
+}
 .home-box button {
     margin-top: 30px;
     padding: 15px 35px;
@@ -49,7 +53,9 @@ body {
     font-weight: 700;
     cursor: pointer;
 }
+
 #prediction { display: none; }
+
 .back-btn {
     margin: 20px;
     padding: 10px 18px;
@@ -59,6 +65,12 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
+
+header {
+    text-align: center;
+    padding: 30px 20px;
+}
+
 .container {
     max-width: 900px;
     margin: auto;
@@ -67,18 +79,30 @@ body {
     padding: 30px;
     border-radius: 20px;
 }
+
 input, select, button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
     border-radius: 12px;
     border: none;
+    font-size: 16px;
 }
+
+input, select {
+    background: rgba(255,255,255,0.9);
+}
+
 button {
     background: #ffcc00;
     font-weight: 700;
+    cursor: pointer;
 }
-#loaderBox { display:none; margin-top:20px; }
+
+#loaderBox {
+    display:none;
+    margin-top:20px;
+}
 .progress {
     width:100%;
     height:18px;
@@ -97,6 +121,7 @@ button {
     margin-top:8px;
     font-size:14px;
 }
+
 #resultBox {
     margin-top:20px;
     padding:20px;
@@ -106,10 +131,12 @@ button {
     font-size:20px;
     text-align:center;
 }
+
 footer {
     text-align:center;
     margin-top:40px;
     opacity:0.8;
+    padding-bottom:20px;
 }
 </style>
 </head>
@@ -129,25 +156,26 @@ footer {
 <section id="prediction">
 <button class="back-btn" onclick="goHome()">← Back to Home</button>
 
+<header>
+    <h1>Solar Irradiance Prediction</h1>
+    <p>Auto Weather Data + ML Simulation</p>
+</header>
+
 <div class="container">
-<h2 style="text-align:center;">Weather Parameters (Auto Fetched)</h2>
+
+<h3 style="text-align:center;">Select Location</h3>
 
 <select id="location">
-    <option value="nellore">Nellore, AP</option>
-    <option value="chennai">Chennai, TN</option>
-    <option value="bangalore">Bangalore, KA</option>
-    <option value="hyderabad">Hyderabad, TS</option>
-    <option value="vizag">Visakhapatnam, AP</option>
+    <option value="nellore">Nellore</option>
+    <option value="chennai">Chennai</option>
+    <option value="bangalore">Bangalore</option>
+    <option value="hyderabad">Hyderabad</option>
+    <option value="vizag">Visakhapatnam</option>
 </select>
 
-<input id="hour" readonly placeholder="Hour">
-<input id="day" readonly placeholder="Day">
-<input id="month" readonly placeholder="Month">
-
-<input id="temp" readonly placeholder="Temperature">
-<input id="humidity" readonly placeholder="Humidity">
-<input id="pressure" readonly placeholder="Pressure">
-<input id="wind" readonly placeholder="Wind Direction">
+<input id="hour" placeholder="Hour (auto)" disabled>
+<input id="day" placeholder="Day (auto)" disabled>
+<input id="month" placeholder="Month (auto)" disabled>
 
 <button onclick="predict()">Predict</button>
 
@@ -159,28 +187,33 @@ footer {
 </div>
 
 <div id="resultBox"></div>
+
 </div>
 
 <footer>© 2025 Solar Prediction Project</footer>
 </section>
 
 <script>
+// ---------- ELEMENTS ----------
 const loaderBox = document.getElementById("loaderBox");
 const progressBar = document.getElementById("progressBar");
 const statusText = document.getElementById("statusText");
 const resultBox = document.getElementById("resultBox");
+const locationSelect = document.getElementById("location");
 
+// ---------- LOCATIONS ----------
 const locations = {
-    nellore: { lat:14.44, lon:79.99 },
-    chennai: { lat:13.08, lon:80.27 },
-    bangalore:{ lat:12.97, lon:77.59 },
-    hyderabad:{ lat:17.38, lon:78.48 },
-    vizag:{ lat:17.69, lon:83.22 }
+    nellore: { lat: 14.44, lon: 79.99 },
+    chennai: { lat: 13.08, lon: 80.27 },
+    bangalore: { lat: 12.97, lon: 77.59 },
+    hyderabad: { lat: 17.38, lon: 78.48 },
+    vizag: { lat: 17.69, lon: 83.22 }
 };
 
+// ---------- NAV ----------
 function openPrediction() {
-    home.style.display = "none";
-    prediction.style.display = "block";
+    document.getElementById("home").style.display = "none";
+    document.getElementById("prediction").style.display = "block";
 
     const now = new Date();
     hour.value = now.getHours();
@@ -189,20 +222,22 @@ function openPrediction() {
 }
 
 function goHome() {
-    prediction.style.display = "none";
-    home.style.display = "flex";
+    document.getElementById("prediction").style.display = "none";
+    document.getElementById("home").style.display = "flex";
 }
 
+// ---------- STEP ----------
 function step(p, text) {
-    return new Promise(r => {
+    return new Promise(resolve => {
         setTimeout(() => {
             progressBar.style.width = p + "%";
             statusText.innerText = text;
-            r();
-        }, 600);
+            resolve();
+        }, 700);
     });
 }
 
+// ---------- PREDICT ----------
 async function predict() {
 
     loaderBox.style.display = "block";
@@ -210,7 +245,8 @@ async function predict() {
     progressBar.style.width = "0%";
     statusText.innerText = "";
 
-    const loc = locations[location.value];
+    const loc = locations[locationSelect.value];
+
     let data;
 
     try {
@@ -225,14 +261,14 @@ async function predict() {
         const res = await fetch(api);
         data = await res.json();
 
-    } catch (error) {
-        // FALLBACK (DEMO SAFE)
+    } catch {
+        // Fallback (safe demo)
         data = {
             hourly: {
                 temperature_2m: Array(24).fill(32),
                 relativehumidity_2m: Array(24).fill(55),
                 pressure_msl: Array(24).fill(1010),
-                shortwave_radiation: Array(24).fill(600)
+                shortwave_radiation: Array(24).fill(650)
             }
         };
     }
@@ -243,37 +279,29 @@ async function predict() {
 
     const h = new Date().getHours();
 
-    const temperature = data.hourly.temperature_2m[h];
-    const humidityVal = data.hourly.relativehumidity_2m[h];
-    const pressureVal = data.hourly.pressure_msl[h];
-    const radiation = data.hourly.shortwave_radiation[h];
+    const tempC = data.hourly.temperature_2m[h];
+    const humidity = data.hourly.relativehumidity_2m[h];
+    const pressure = data.hourly.pressure_msl[h];
+    const rad = data.hourly.shortwave_radiation[h];
 
-    temp.value = temperature.toFixed(1);
-    humidity.value = humidityVal.toFixed(0);
-    pressure.value = pressureVal.toFixed(0);
-    wind.value = Math.floor(Math.random() * 360);
-
-    const finalRad = radiation > 0 ? radiation : Math.random() * 40;
-
-    const tempF = (temperature * 9/5) + 32;
-    const pressureAtm = pressureVal / 1013.25;
-    const radKW = finalRad / 1000;
+    const tempF = (tempC * 9/5) + 32;
+    const pressureAtm = pressure / 1013.25;
+    const radKW = rad / 1000;
 
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
 
-    resultBox.innerHTML =
-        `<b>Predicted Solar Irradiance</b><br><br>
-        ${finalRad.toFixed(2)} W/m² (${radKW.toFixed(3)} kW/m²)<br><br>
+    resultBox.innerHTML = `
+        <b>Predicted Solar Irradiance</b><br><br>
+        ${rad.toFixed(2)} W/m² (${radKW.toFixed(3)} kW/m²)<br><br>
         <small>
-        Temperature: ${temperature.toFixed(1)} °C / ${tempF.toFixed(1)} °F<br>
-        Humidity: ${humidityVal.toFixed(0)} %<br>
-        Pressure: ${pressureVal.toFixed(0)} hPa / ${pressureAtm.toFixed(3)} atm
-        </small>`;
+        Temperature: ${tempC.toFixed(1)} °C / ${tempF.toFixed(1)} °F<br>
+        Humidity: ${humidity.toFixed(0)} %<br>
+        Pressure: ${pressure.toFixed(0)} hPa / ${pressureAtm.toFixed(3)} atm
+        </small>
+    `;
 }
-
 </script>
 
 </body>
 </html>
-
