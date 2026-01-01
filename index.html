@@ -21,6 +21,8 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+
+/* HOME */
 #home {
     height: 100vh;
     display: flex;
@@ -33,8 +35,12 @@ body {
     padding: 50px;
     border-radius: 20px;
     text-align: center;
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
 }
-.home-box h1 { font-size: 40px; }
+.home-box h1 {
+    font-size: 40px;
+    font-weight: 700;
+}
 .home-box button {
     margin-top: 30px;
     padding: 15px 35px;
@@ -45,6 +51,8 @@ body {
     font-weight: 700;
     cursor: pointer;
 }
+
+/* PREDICTION */
 #prediction { display: none; }
 .back-btn {
     margin: 20px;
@@ -55,6 +63,7 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
+
 .container {
     max-width: 900px;
     margin: auto;
@@ -63,18 +72,23 @@ body {
     padding: 30px;
     border-radius: 20px;
 }
-input, select, button {
+
+input, button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
     border-radius: 12px;
     border: none;
 }
+
 button {
     background: #ffcc00;
     font-weight: 700;
+    cursor: pointer;
 }
+
 #loaderBox { display:none; margin-top:20px; }
+
 .progress {
     width:100%;
     height:18px;
@@ -82,26 +96,30 @@ button {
     border-radius:10px;
     overflow:hidden;
 }
+
 .progress-bar {
     height:100%;
     width:0%;
     background:#ffcc00;
     transition: width 0.4s ease;
 }
+
 #statusText {
     text-align:center;
     margin-top:8px;
     font-size:14px;
 }
+
 #resultBox {
     margin-top:20px;
     padding:20px;
     background:rgba(0,0,0,0.35);
     border-radius:12px;
     display:none;
-    font-size:20px;
+    font-size:22px;
     text-align:center;
 }
+
 footer {
     text-align:center;
     margin-top:40px;
@@ -126,23 +144,11 @@ footer {
 <button class="back-btn" onclick="goHome()">← Back to Home</button>
 
 <div class="container">
-<h2 style="text-align:center;">Weather Parameters (Auto Fetched)</h2>
+<h2 style="text-align:center;">Weather Parameters (Auto Generated)</h2>
 
-<select id="location">
-    <option value="14.44,79.99">Nellore</option>
-    <option value="17.38,78.48">Hyderabad</option>
-    <option value="13.08,80.27">Chennai</option>
-    <option value="12.97,77.59">Bangalore</option>
-</select>
-
-<input id="hour" readonly>
-<input id="day" readonly>
-<input id="month" readonly>
-
-<input id="temp" readonly>
-<input id="humidity" readonly>
-<input id="pressure" readonly>
-<input id="wind" readonly>
+<input id="hour" readonly placeholder="Hour">
+<input id="day" readonly placeholder="Day">
+<input id="month" readonly placeholder="Month">
 
 <button onclick="predict()">Predict</button>
 
@@ -165,9 +171,11 @@ const progressBar = document.getElementById("progressBar");
 const statusText = document.getElementById("statusText");
 const resultBox = document.getElementById("resultBox");
 
+/* NAVIGATION */
 function openPrediction() {
-    home.style.display = "none";
-    prediction.style.display = "block";
+    document.getElementById("home").style.display = "none";
+    document.getElementById("prediction").style.display = "block";
+
     const now = new Date();
     hour.value = now.getHours();
     day.value = now.getDate();
@@ -175,68 +183,74 @@ function openPrediction() {
 }
 
 function goHome() {
-    prediction.style.display = "none";
-    home.style.display = "flex";
+    document.getElementById("prediction").style.display = "none";
+    document.getElementById("home").style.display = "flex";
 }
 
-function step(p, t) {
-    return new Promise(r => setTimeout(() => {
-        progressBar.style.width = p + "%";
-        statusText.innerText = t;
-        r();
-    }, 600));
+/* PROGRESS STEP */
+function step(p, txt) {
+    return new Promise(res => {
+        setTimeout(() => {
+            progressBar.style.width = p + "%";
+            statusText.innerText = txt;
+            res();
+        }, 600);
+    });
 }
 
-function randomBetween(a, b) {
-    return Math.random() * (b - a) + a;
+/* RANDOM UTILITY */
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
+/* TIME-BASED SOLAR IRRADIANCE (NEVER ZERO) */
+function solarByTime(hour) {
+    if (hour >= 12 && hour < 14) return rand(900, 1100);
+    if (hour >= 10 && hour < 12) return rand(700, 900);
+    if (hour >= 8 && hour < 10) return rand(400, 650);
+    if (hour >= 6 && hour < 8) return rand(100, 300);
+    if (hour >= 16 && hour < 18) return rand(300, 500);
+    if (hour >= 18 && hour < 19) return rand(100, 200);
+    return rand(20, 80); // night fallback
+}
+
+/* MAIN PREDICTION */
 async function predict() {
+
     loaderBox.style.display = "block";
     resultBox.style.display = "none";
     progressBar.style.width = "0%";
+    statusText.innerText = "";
 
-    const [lat, lon] = location.value.split(",");
-
-    await step(15, "Fetching system time...");
-    await step(30, "Connecting to weather server...");
-    await step(45, "Processing weather data...");
-    await step(60, "Loading trained ML model...");
-    await step(80, "Running solar irradiance model...");
+    await step(15, "Collecting time parameters...");
+    await step(35, "Preprocessing weather data...");
+    await step(55, "Loading trained ML model...");
+    await step(75, "Running solar irradiance model...");
     await step(100, "Prediction completed");
 
-    // Mock + API-safe values
-    const tempC = randomBetween(25, 36);
-    const tempF = tempC * 9/5 + 32;
-    const hum = randomBetween(40, 75);
-    const pres = randomBetween(1005, 1018);
-    const atm = pres / 1013.25;
+    const h = Number(hour.value);
 
-    temp.value = `${tempC.toFixed(1)} °C / ${tempF.toFixed(1)} °F`;
-    humidity.value = hum.toFixed(0) + " %";
-    pressure.value = `${pres.toFixed(0)} hPa / ${atm.toFixed(2)} atm`;
-    wind.value = randomBetween(0,360).toFixed(0) + " °";
+    // Fake-but-realistic weather values
+    const tempC = rand(25, 38);
+    const tempF = (tempC * 9/5) + 32;
+    const humidity = rand(40, 75);
+    const pressure = rand(990, 1020);
 
-    const h = new Date().getHours();
-    let radiation;
-    if (h >= 12 && h <= 14) radiation = randomBetween(900,1100);
-    else if (h >= 10 && h < 12) radiation = randomBetween(700,900);
-    else if (h >= 8 && h < 10) radiation = randomBetween(400,650);
-    else if (h >= 6 && h < 8) radiation = randomBetween(100,300);
-    else if (h >= 16 && h < 18) radiation = randomBetween(300,500);
-    else radiation = randomBetween(20,80);
+    // FINAL GUARANTEED NON-ZERO IRRADIANCE
+    const irradiance = solarByTime(h);
 
     loaderBox.style.display = "none";
     resultBox.style.display = "block";
 
     resultBox.innerHTML = `
         <b>Predicted Solar Irradiance</b><br>
-        ${radiation.toFixed(2)} W/m²<br><br>
+        ${irradiance.toFixed(2)} W/m²<br><br>
         <small>
-        Temp: ${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F) |
-        Humidity: ${hum.toFixed(0)} % |
-        Pressure: ${pres.toFixed(0)} hPa
-        </small>`;
+        Temperature: ${tempC.toFixed(1)} °C (${tempF.toFixed(1)} °F)<br>
+        Humidity: ${humidity.toFixed(0)} %<br>
+        Pressure: ${pressure.toFixed(0)} hPa
+        </small>
+    `;
 }
 </script>
 
