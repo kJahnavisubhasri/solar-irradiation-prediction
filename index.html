@@ -5,119 +5,133 @@
 <title>Solar Irradiance Prediction</title>
 
 <style>
-*{box-sizing:border-box}
-body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    color:white;
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: white;
 }
 
-/* COMMON */
-.page{
-    min-height:100vh;
-    display:none;
-    padding:40px;
+/* ---------- PAGE CONTROL ---------- */
+.page {
+    display: none;
+    min-height: 100vh;
+    padding: 40px 20px;
 }
-.page.active{display:block}
+.page.active { display: block; }
 
-.card{
-    max-width:450px;
-    margin:auto;
-    background:rgba(0,0,0,0.45);
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 0 35px rgba(0,0,0,0.6);
-}
-
-h1,h2{text-align:center}
-
-button{
-    width:100%;
-    padding:12px;
-    margin-top:12px;
-    border:none;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
+/* ---------- COMMON CARD ---------- */
+.card {
+    max-width: 420px;
+    margin: auto;
+    background: rgba(0,0,0,0.45);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
 }
 
-input{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border-radius:8px;
-    border:none;
+h1, h2 {
+    text-align: center;
+    margin-bottom: 10px;
 }
 
-.status{
-    margin-top:15px;
-    font-size:13px;
-    line-height:1.5;
+p {
+    text-align: center;
+    opacity: 0.9;
 }
 
-.result{
-    margin-top:15px;
-    padding-left:10px;
-    border-left:4px solid #fff;
+/* ---------- BUTTONS ---------- */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg,#ffeb3b,#ff9800);
+    color: black;
 }
 
-/* HOME */
-#home{
-    background:linear-gradient(135deg,#ff8008,#ffc837,#ff0080);
+button:hover {
+    transform: scale(1.02);
 }
 
-/* LOCATION PAGE */
-#locations{
-    background:linear-gradient(135deg,#00c6ff,#0072ff,#00ffcc);
+/* ---------- INPUT ---------- */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
 }
 
-/* PREDICTION */
-#predict{
-    background-size:cover;
-    background-position:center;
+/* ---------- STATUS & RESULT ---------- */
+.status {
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.result {
+    margin-top: 15px;
+    padding-left: 12px;
+    border-left: 4px solid #ffeb3b;
+    font-size: 14px;
+}
+
+/* ---------- PAGE BACKGROUNDS ---------- */
+#home {
+    background: linear-gradient(135deg,#ff512f,#f09819,#ffeb3b);
+}
+
+#locations {
+    background: linear-gradient(135deg,#00c6ff,#0072ff,#00ffcc);
+}
+
+#predict {
+    background: linear-gradient(135deg,#ff6a00,#ee0979,#ffcc00);
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
+<!-- ================= HOME ================= -->
 <div class="page active" id="home">
     <div class="card">
         <h1>🌞 Solar Irradiance Prediction</h1>
-        <p style="text-align:center;">
-            Multi-Location Solar Forecasting System<br>
-            Frontend Demonstration Project
-        </p>
-        <button onclick="goLocations()">Enter System</button>
+        <p>Frontend Simulation for Solar Energy Forecasting</p>
+        <button onclick="showPage('locations')">Start Project</button>
     </div>
 </div>
 
-<!-- LOCATION BUTTONS -->
+<!-- ================= LOCATIONS ================= -->
 <div class="page" id="locations">
     <div class="card">
         <h2>Select Location</h2>
 
-        <button onclick="openPredict('Nellore',0)">Nellore</button>
-        <button onclick="openPredict('Chennai',1)">Chennai</button>
-        <button onclick="openPredict('Hyderabad',2)">Hyderabad</button>
-        <button onclick="openPredict('Bangalore',3)">Bangalore</button>
-        <button onclick="openPredict('Vijayawada',4)">Vijayawada</button>
-        <button onclick="openPredict('Visakhapatnam',5)">Visakhapatnam</button>
-        <button onclick="openPredict('Tirupati',6)">Tirupati</button>
-        <button onclick="openPredict('Guntur',7)">Guntur</button>
-        <button onclick="openPredict('Kurnool',8)">Kurnool</button>
-        <button onclick="openPredict('Rajahmundry',9)">Rajahmundry</button>
+        <button onclick="openPredict('Nellore')">Nellore</button>
+        <button onclick="openPredict('Chennai')">Chennai</button>
+        <button onclick="openPredict('Hyderabad')">Hyderabad</button>
+        <button onclick="openPredict('Bangalore')">Bangalore</button>
+        <button onclick="openPredict('Vijayawada')">Vijayawada</button>
+        <button onclick="openPredict('Visakhapatnam')">Visakhapatnam</button>
+        <button onclick="openPredict('Tirupati')">Tirupati</button>
+        <button onclick="openPredict('Guntur')">Guntur</button>
+        <button onclick="openPredict('Kurnool')">Kurnool</button>
+        <button onclick="openPredict('Rajahmundry')">Rajahmundry</button>
 
-        <button onclick="goHome()" style="margin-top:20px;">⬅ Back</button>
+        <button onclick="showPage('home')" style="margin-top:20px;">⬅ Back</button>
     </div>
 </div>
 
-<!-- PREDICTION PAGE -->
+<!-- ================= PREDICTION ================= -->
 <div class="page" id="predict">
     <div class="card">
-        <h2 id="title"></h2>
+        <h2 id="locTitle">Location</h2>
 
         <input type="time" id="time" value="12:00">
 
@@ -126,82 +140,82 @@ input{
         <div class="status" id="status"></div>
         <div class="result" id="result"></div>
 
-        <button onclick="goLocations()" style="margin-top:15px;">⬅ Change Location</button>
+        <button onclick="showPage('locations')" style="margin-top:15px;">⬅ Change Location</button>
     </div>
 </div>
 
 <script>
-const gradients = [
- "linear-gradient(135deg,#ff512f,#f09819)",
- "linear-gradient(135deg,#fceabb,#f8b500)",
- "linear-gradient(135deg,#00c6ff,#0072ff)",
- "linear-gradient(135deg,#43cea2,#185a9d)",
- "linear-gradient(135deg,#ff416c,#ff4b2b)",
- "linear-gradient(135deg,#1fa2ff,#12d8fa,#a6ffcb)",
- "linear-gradient(135deg,#f7971e,#ffd200)",
- "linear-gradient(135deg,#56ab2f,#a8e063)",
- "linear-gradient(135deg,#c31432,#240b36)",
- "linear-gradient(135deg,#141e30,#243b55)"
-];
-
-let currentLocation = "";
-
-function show(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+/* ---------- PAGE NAV ---------- */
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
-function goHome(){ show('home'); }
-function goLocations(){ show('locations'); }
+/* ---------- GLOBAL ---------- */
+let currentLocation = "";
 
-function openPredict(loc,index){
+/* ---------- LOCATION CLICK ---------- */
+function openPredict(loc) {
     currentLocation = loc;
-    document.getElementById("predict").style.background = gradients[index];
-    document.getElementById("title").innerText = "📍 " + loc;
-    document.getElementById("status").innerHTML="";
-    document.getElementById("result").innerHTML="";
-    show('predict');
+    document.getElementById("locTitle").innerText = "📍 " + loc;
+    document.getElementById("status").innerHTML = "";
+    document.getElementById("result").innerHTML = "";
+    showPage('predict');
 }
 
-function rand(min,max){ return Math.random()*(max-min)+min; }
+/* ---------- HELPERS ---------- */
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
+}
+function wait(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
 
-async function predict(){
+/* ---------- PREDICTION ---------- */
+async function predict() {
     const status = document.getElementById("status");
     const result = document.getElementById("result");
-    status.innerHTML="";
-    result.innerHTML="";
+
+    status.innerHTML = "";
+    result.innerHTML = "";
 
     const hour = parseInt(document.getElementById("time").value.split(":")[0]);
 
-    status.innerHTML += "🌐 Fetching weather data for "+currentLocation+"...<br>";
-    await new Promise(r=>setTimeout(r,600));
+    status.innerHTML += "🌐 Fetching weather data for " + currentLocation + "...<br>";
+    await wait(600);
 
-    const tempC = rand(25,38);
-    const hum = rand(40,75);
-    const pres = rand(1005,1018);
+    const tempC = rand(26, 38);
+    const humidity = rand(40, 75);
+    const pressure = rand(1005, 1018);
+
+    status.innerHTML += "⚙️ Processing atmospheric parameters...<br>";
+    await wait(600);
 
     status.innerHTML += "🤖 Running solar irradiance model...<br>";
-    await new Promise(r=>setTimeout(r,700));
+    await wait(700);
 
-    let ir;
-    if(hour>=6 && hour<9) ir=rand(200,450);
-    else if(hour<12) ir=rand(500,750);
-    else if(hour<15) ir=rand(750,1000);
-    else if(hour<17) ir=rand(400,650);
-    else if(hour<18) ir=rand(200,350);
-    else ir=rand(5,50);
+    let irradiance;
+    if (hour >= 6 && hour < 9) irradiance = rand(200, 450);
+    else if (hour < 12) irradiance = rand(500, 750);
+    else if (hour < 15) irradiance = rand(750, 1000);
+    else if (hour < 17) irradiance = rand(400, 650);
+    else if (hour < 18) irradiance = rand(200, 350);
+    else irradiance = rand(10, 60);
 
-    const tempF = tempC*9/5+32;
-    const mmHg = pres*0.75006;
+    const tempF = (tempC * 9/5) + 32;
+    const pressureMmHg = pressure * 0.75006;
+
+    status.innerHTML += "✅ Prediction completed<br>";
 
     result.innerHTML = `
         <b>Predicted Solar Irradiance</b><br>
         <span style="font-size:20px;color:#ffeb3b;">
-        ${ir.toFixed(2)} W/m²
+        ${irradiance.toFixed(2)} W/m²
         </span><br><br>
+
         🌡 ${tempC.toFixed(1)} °C | ${tempF.toFixed(1)} °F<br>
-        💧 ${hum.toFixed(0)} %<br>
-        🌬 ${pres.toFixed(0)} hPa | ${mmHg.toFixed(1)} mmHg
+        💧 ${humidity.toFixed(0)} %<br>
+        🌬 ${pressure.toFixed(0)} hPa | ${pressureMmHg.toFixed(1)} mmHg
     `;
 }
 </script>
