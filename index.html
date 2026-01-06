@@ -29,10 +29,7 @@ body {
     box-shadow: 0 0 30px rgba(0,0,0,0.6);
 }
 
-h1, h2 {
-    text-align: center;
-}
-
+h1, h2 { text-align: center; }
 p { text-align: center; }
 
 button {
@@ -118,7 +115,8 @@ li {
     <div class="card">
         <h2>Select Location</h2>
 
-        <div id="locPage1">
+        <!-- PAGE 1 -->
+        <div class="locPage">
             <button onclick="openPredict('Nellore')">Nellore</button>
             <button onclick="openPredict('Chennai')">Chennai</button>
             <button onclick="openPredict('Hyderabad')">Hyderabad</button>
@@ -126,7 +124,8 @@ li {
             <button onclick="openPredict('Vijayawada')">Vijayawada</button>
         </div>
 
-        <div id="locPage2" style="display:none;">
+        <!-- PAGE 2 -->
+        <div class="locPage">
             <button onclick="openPredict('Visakhapatnam')">Visakhapatnam</button>
             <button onclick="openPredict('Tirupati')">Tirupati</button>
             <button onclick="openPredict('Guntur')">Guntur</button>
@@ -134,20 +133,76 @@ li {
             <button onclick="openPredict('Rajahmundry')">Rajahmundry</button>
         </div>
 
-        <div id="locPage3" style="display:none;">
-            <button onclick="openPredict('Warangal')">Warangal</button>
-            <button onclick="openPredict('Kadapa')">Kadapa</button>
-            <button onclick="openPredict('Ongole')">Ongole</button>
-            <button onclick="openPredict('Eluru')">Eluru</button>
-            <button onclick="openPredict('Nizamabad')">Nizamabad</button>
+        <!-- PAGE 3 -->
+        <div class="locPage">
+            <button onclick="openPredict('Delhi')">Delhi</button>
+            <button onclick="openPredict('Mumbai')">Mumbai</button>
+            <button onclick="openPredict('Pune')">Pune</button>
+            <button onclick="openPredict('Nagpur')">Nagpur</button>
+            <button onclick="openPredict('Nashik')">Nashik</button>
         </div>
 
-        <div id="locPage4" style="display:none;">
-            <button onclick="openPredict('Anantapur')">Anantapur</button>
-            <button onclick="openPredict('Chittoor')">Chittoor</button>
-            <button onclick="openPredict('Srikakulam')">Srikakulam</button>
-            <button onclick="openPredict('Vizianagaram')">Vizianagaram</button>
-            <button onclick="openPredict('Bhimavaram')">Bhimavaram</button>
+        <!-- PAGE 4 -->
+        <div class="locPage">
+            <button onclick="openPredict('Kolkata')">Kolkata</button>
+            <button onclick="openPredict('Howrah')">Howrah</button>
+            <button onclick="openPredict('Darjeeling')">Darjeeling</button>
+            <button onclick="openPredict('Malda')">Malda</button>
+            <button onclick="openPredict('Nadia')">Nadia</button>
+        </div>
+
+        <!-- PAGE 5 -->
+        <div class="locPage">
+            <button onclick="openPredict('Jaipur')">Jaipur</button>
+            <button onclick="openPredict('Jodhpur')">Jodhpur</button>
+            <button onclick="openPredict('Udaipur')">Udaipur</button>
+            <button onclick="openPredict('Kota')">Kota</button>
+            <button onclick="openPredict('Ajmer')">Ajmer</button>
+        </div>
+
+        <!-- PAGE 6 -->
+        <div class="locPage">
+            <button onclick="openPredict('Lucknow')">Lucknow</button>
+            <button onclick="openPredict('Kanpur')">Kanpur</button>
+            <button onclick="openPredict('Varanasi')">Varanasi</button>
+            <button onclick="openPredict('Prayagraj')">Prayagraj</button>
+            <button onclick="openPredict('Agra')">Agra</button>
+        </div>
+
+        <!-- PAGE 7 -->
+        <div class="locPage">
+            <button onclick="openPredict('Patna')">Patna</button>
+            <button onclick="openPredict('Gaya')">Gaya</button>
+            <button onclick="openPredict('Bhagalpur')">Bhagalpur</button>
+            <button onclick="openPredict('Muzaffarpur')">Muzaffarpur</button>
+            <button onclick="openPredict('Darbhanga')">Darbhanga</button>
+        </div>
+
+        <!-- PAGE 8 -->
+        <div class="locPage">
+            <button onclick="openPredict('Bhopal')">Bhopal</button>
+            <button onclick="openPredict('Indore')">Indore</button>
+            <button onclick="openPredict('Jabalpur')">Jabalpur</button>
+            <button onclick="openPredict('Gwalior')">Gwalior</button>
+            <button onclick="openPredict('Ujjain')">Ujjain</button>
+        </div>
+
+        <!-- PAGE 9 -->
+        <div class="locPage">
+            <button onclick="openPredict('Chandigarh')">Chandigarh</button>
+            <button onclick="openPredict('Ludhiana')">Ludhiana</button>
+            <button onclick="openPredict('Amritsar')">Amritsar</button>
+            <button onclick="openPredict('Jalandhar')">Jalandhar</button>
+            <button onclick="openPredict('Patiala')">Patiala</button>
+        </div>
+
+        <!-- PAGE 10 -->
+        <div class="locPage">
+            <button onclick="openPredict('Ranchi')">Ranchi</button>
+            <button onclick="openPredict('Dhanbad')">Dhanbad</button>
+            <button onclick="openPredict('Bokaro')">Bokaro</button>
+            <button onclick="openPredict('Hazaribagh')">Hazaribagh</button>
+            <button onclick="openPredict('Giridih')">Giridih</button>
         </div>
 
         <button onclick="prevLoc()">◀ Previous</button>
@@ -177,8 +232,8 @@ function showPage(id) {
 }
 
 let currentLocation = "";
-let locIndex = 1;
-const totalLocPages = 4;
+let locIndex = 0;
+const locPages = document.getElementsByClassName("locPage");
 
 function openPredict(loc) {
     currentLocation = loc;
@@ -189,19 +244,20 @@ function openPredict(loc) {
 }
 
 function updateLocPages() {
-    for (let i = 1; i <= totalLocPages; i++) {
-        document.getElementById("locPage" + i).style.display =
-            (i === locIndex) ? "block" : "none";
+    for (let i = 0; i < locPages.length; i++) {
+        locPages[i].style.display = (i === locIndex) ? "block" : "none";
     }
 }
 
 function nextLoc() {
-    if (locIndex < totalLocPages) { locIndex++; updateLocPages(); }
+    if (locIndex < locPages.length - 1) { locIndex++; updateLocPages(); }
 }
 
 function prevLoc() {
-    if (locIndex > 1) { locIndex--; updateLocPages(); }
+    if (locIndex > 0) { locIndex--; updateLocPages(); }
 }
+
+updateLocPages();
 
 function rand(min, max) {
     return Math.random() * (max - min) + min;
@@ -261,17 +317,3 @@ async function predict() {
 
 </body>
 </html>
-
-  
-
-
-
-  
-
-
-
-
-
-    
-    
-   
