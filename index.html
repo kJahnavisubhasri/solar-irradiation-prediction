@@ -29,8 +29,7 @@ body {
     box-shadow: 0 0 30px rgba(0,0,0,0.6);
 }
 
-h1, h2 { text-align: center; }
-p { text-align: center; }
+h1, h2, p { text-align: center; }
 
 button {
     width: 100%;
@@ -45,18 +44,12 @@ button {
     color: black;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
     border-radius: 10px;
     border: none;
-}
-
-.status {
-    margin-top: 15px;
-    font-size: 13px;
-    line-height: 1.6;
 }
 
 .result {
@@ -66,20 +59,11 @@ input {
     font-size: 14px;
 }
 
-ul { list-style: none; padding: 0; }
-
-li {
-    margin: 10px 0;
-    padding: 10px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-}
-
 /* BACKGROUNDS */
 #home { background: linear-gradient(135deg,#ff512f,#f09819,#ffeb3b); }
-#about { background: linear-gradient(135deg,#6a11cb,#2575fc); }
-#locations { background: linear-gradient(135deg,#00c6ff,#0072ff,#00ffcc); }
-#predict { background: linear-gradient(135deg,#ff6a00,#ee0979,#ffcc00); }
+#locations { background: linear-gradient(135deg,#00c6ff,#0072ff); }
+#predict { background: linear-gradient(135deg,#ff6a00,#ee0979); }
+#resultPage { background: linear-gradient(135deg,#11998e,#38ef7d); }
 </style>
 </head>
 
@@ -89,124 +73,22 @@ li {
 <div class="page active" id="home">
     <div class="card">
         <h1>🌞 Solar Irradiance Prediction</h1>
-        <p>Frontend Simulation for Solar Energy Forecasting</p>
+        <p>Frontend Simulation Project</p>
         <button onclick="showPage('locations')">Start Project</button>
-        <button onclick="showPage('about')">About Us</button>
-    </div>
-</div>
-
-<!-- ABOUT -->
-<div class="page" id="about">
-    <div class="card">
-        <h2>👩‍🎓 About Us</h2>
-        <ul>
-            <li><b>B. Vandhana</b><br>222U1A3704</li>
-            <li><b>K. J. Subhasri</b><br>222U1A3724</li>
-            <li><b>N. Prasanthi</b><br>222U1A3737</li>
-            <li><b>P. Saranya</b><br>222U1A3744</li>
-            <li><b>P. Kavyanjali</b><br>222U1A3744</li>
-        </ul>
-        <button onclick="showPage('home')">⬅ Back</button>
     </div>
 </div>
 
 <!-- LOCATIONS -->
 <div class="page" id="locations">
     <div class="card">
-        <h2>Select Location</h2>
+        <h2>Select District</h2>
 
-        <!-- PAGE 1 -->
-        <div class="locPage">
-            <button onclick="openPredict('Nellore')">Nellore</button>
-            <button onclick="openPredict('Chennai')">Chennai</button>
-            <button onclick="openPredict('Hyderabad')">Hyderabad</button>
-            <button onclick="openPredict('Bangalore')">Bangalore</button>
-            <button onclick="openPredict('Vijayawada')">Vijayawada</button>
-        </div>
+        <button onclick="openPredict('Nellore')">Nellore</button>
+        <button onclick="openPredict('Chennai')">Chennai</button>
+        <button onclick="openPredict('Hyderabad')">Hyderabad</button>
+        <button onclick="openPredict('Bangalore')">Bangalore</button>
+        <button onclick="openPredict('Delhi')">Delhi</button>
 
-        <!-- PAGE 2 -->
-        <div class="locPage">
-            <button onclick="openPredict('Visakhapatnam')">Visakhapatnam</button>
-            <button onclick="openPredict('Tirupati')">Tirupati</button>
-            <button onclick="openPredict('Guntur')">Guntur</button>
-            <button onclick="openPredict('Kurnool')">Kurnool</button>
-            <button onclick="openPredict('Rajahmundry')">Rajahmundry</button>
-        </div>
-
-        <!-- PAGE 3 -->
-        <div class="locPage">
-            <button onclick="openPredict('Delhi')">Delhi</button>
-            <button onclick="openPredict('Mumbai')">Mumbai</button>
-            <button onclick="openPredict('Pune')">Pune</button>
-            <button onclick="openPredict('Nagpur')">Nagpur</button>
-            <button onclick="openPredict('Nashik')">Nashik</button>
-        </div>
-
-        <!-- PAGE 4 -->
-        <div class="locPage">
-            <button onclick="openPredict('Kolkata')">Kolkata</button>
-            <button onclick="openPredict('Howrah')">Howrah</button>
-            <button onclick="openPredict('Darjeeling')">Darjeeling</button>
-            <button onclick="openPredict('Malda')">Malda</button>
-            <button onclick="openPredict('Nadia')">Nadia</button>
-        </div>
-
-        <!-- PAGE 5 -->
-        <div class="locPage">
-            <button onclick="openPredict('Jaipur')">Jaipur</button>
-            <button onclick="openPredict('Jodhpur')">Jodhpur</button>
-            <button onclick="openPredict('Udaipur')">Udaipur</button>
-            <button onclick="openPredict('Kota')">Kota</button>
-            <button onclick="openPredict('Ajmer')">Ajmer</button>
-        </div>
-
-        <!-- PAGE 6 -->
-        <div class="locPage">
-            <button onclick="openPredict('Lucknow')">Lucknow</button>
-            <button onclick="openPredict('Kanpur')">Kanpur</button>
-            <button onclick="openPredict('Varanasi')">Varanasi</button>
-            <button onclick="openPredict('Prayagraj')">Prayagraj</button>
-            <button onclick="openPredict('Agra')">Agra</button>
-        </div>
-
-        <!-- PAGE 7 -->
-        <div class="locPage">
-            <button onclick="openPredict('Patna')">Patna</button>
-            <button onclick="openPredict('Gaya')">Gaya</button>
-            <button onclick="openPredict('Bhagalpur')">Bhagalpur</button>
-            <button onclick="openPredict('Muzaffarpur')">Muzaffarpur</button>
-            <button onclick="openPredict('Darbhanga')">Darbhanga</button>
-        </div>
-
-        <!-- PAGE 8 -->
-        <div class="locPage">
-            <button onclick="openPredict('Bhopal')">Bhopal</button>
-            <button onclick="openPredict('Indore')">Indore</button>
-            <button onclick="openPredict('Jabalpur')">Jabalpur</button>
-            <button onclick="openPredict('Gwalior')">Gwalior</button>
-            <button onclick="openPredict('Ujjain')">Ujjain</button>
-        </div>
-
-        <!-- PAGE 9 -->
-        <div class="locPage">
-            <button onclick="openPredict('Chandigarh')">Chandigarh</button>
-            <button onclick="openPredict('Ludhiana')">Ludhiana</button>
-            <button onclick="openPredict('Amritsar')">Amritsar</button>
-            <button onclick="openPredict('Jalandhar')">Jalandhar</button>
-            <button onclick="openPredict('Patiala')">Patiala</button>
-        </div>
-
-        <!-- PAGE 10 -->
-        <div class="locPage">
-            <button onclick="openPredict('Ranchi')">Ranchi</button>
-            <button onclick="openPredict('Dhanbad')">Dhanbad</button>
-            <button onclick="openPredict('Bokaro')">Bokaro</button>
-            <button onclick="openPredict('Hazaribagh')">Hazaribagh</button>
-            <button onclick="openPredict('Giridih')">Giridih</button>
-        </div>
-
-        <button onclick="prevLoc()">◀ Previous</button>
-        <button onclick="nextLoc()">Next ▶</button>
         <button onclick="showPage('home')">⬅ Back</button>
     </div>
 </div>
@@ -215,79 +97,75 @@ li {
 <div class="page" id="predict">
     <div class="card">
         <h2 id="locTitle"></h2>
-        <input type="time" id="time" value="12:00">
-        <button onclick="predict()">Predict Solar Irradiance</button>
 
-        <div class="status" id="status"></div>
-        <div class="result" id="result"></div>
+        <select id="area">
+            <option value="">Select Area</option>
+        </select>
+
+        <input type="time" id="time" value="12:00">
+
+        <button onclick="predictAndRedirect()">Predict Solar Irradiance</button>
 
         <button onclick="showPage('locations')">⬅ Change Location</button>
     </div>
 </div>
 
+<!-- RESULT PAGE -->
+<div class="page" id="resultPage">
+    <div class="card">
+        <h2>📊 Prediction Result</h2>
+        <div class="result" id="finalResult"></div>
+        <button onclick="showPage('predict')">⬅ Back</button>
+        <button onclick="showPage('home')">🏠 Home</button>
+    </div>
+</div>
+
 <script>
+/* PAGE SWITCH */
 function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
-let currentLocation = "";
-let locIndex = 0;
-const locPages = document.getElementsByClassName("locPage");
+/* AREA DATA */
+const areaData = {
+    Nellore: ["Stonehousepet", "Vedayapalem", "Magunta Layout"],
+    Chennai: ["T Nagar", "Anna Nagar", "Velachery"],
+    Hyderabad: ["Gachibowli", "Madhapur", "Kukatpally"],
+    Bangalore: ["Whitefield", "Electronic City", "Indiranagar"],
+    Delhi: ["Dwarka", "Rohini", "Saket"]
+};
 
+let currentLocation = "";
+
+/* OPEN PREDICT PAGE */
 function openPredict(loc) {
     currentLocation = loc;
     document.getElementById("locTitle").innerText = "📍 " + loc;
-    document.getElementById("status").innerHTML = "";
-    document.getElementById("result").innerHTML = "";
+
+    const areaSelect = document.getElementById("area");
+    areaSelect.innerHTML = '<option value="">Select Area</option>';
+
+    areaData[loc].forEach(a => {
+        const opt = document.createElement("option");
+        opt.value = a;
+        opt.textContent = a;
+        areaSelect.appendChild(opt);
+    });
+
     showPage('predict');
 }
 
-function updateLocPages() {
-    for (let i = 0; i < locPages.length; i++) {
-        locPages[i].style.display = (i === locIndex) ? "block" : "none";
-    }
-}
-
-function nextLoc() {
-    if (locIndex < locPages.length - 1) { locIndex++; updateLocPages(); }
-}
-
-function prevLoc() {
-    if (locIndex > 0) { locIndex--; updateLocPages(); }
-}
-
-updateLocPages();
-
+/* RANDOM UTILS */
 function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function wait(ms) {
-    return new Promise(r => setTimeout(r, ms));
-}
+/* PREDICT & REDIRECT */
+function predictAndRedirect() {
 
-async function predict() {
-    const status = document.getElementById("status");
-    const result = document.getElementById("result");
-
-    status.innerHTML = "";
-    result.innerHTML = "";
-
+    const area = document.getElementById("area").value || "Not specified";
     const hour = parseInt(document.getElementById("time").value.split(":")[0]);
-
-    status.innerHTML += "🌐 Fetching weather data for " + currentLocation + "...<br>";
-    await wait(600);
-
-    const tempC = rand(26, 38);
-    const humidity = rand(40, 75);
-    const pressure = rand(1005, 1018);
-
-    status.innerHTML += "⚙️ Processing atmospheric parameters...<br>";
-    await wait(600);
-
-    status.innerHTML += "🤖 Running solar irradiance model...<br>";
-    await wait(700);
 
     let irradiance;
     if (hour >= 6 && hour < 9) irradiance = rand(200, 450);
@@ -297,21 +175,28 @@ async function predict() {
     else if (hour < 18) irradiance = rand(200, 350);
     else irradiance = rand(10, 60);
 
+    const tempC = rand(26, 38);
+    const humidity = rand(40, 75);
+    const pressure = rand(1005, 1018);
     const tempF = (tempC * 9/5) + 32;
-    const pressureMmHg = pressure * 0.75006;
 
-    status.innerHTML += "✅ Prediction completed<br>";
+    document.getElementById("finalResult").innerHTML = `
+        <b>🌞 Solar Irradiance</b><br><br>
 
-    result.innerHTML = `
-        <b>Predicted Solar Irradiance</b><br>
-        <span style="font-size:20px;color:#ffeb3b;">
-        ${irradiance.toFixed(2)} W/m²
+        📍 Location: ${currentLocation}<br>
+        🏘 Area: ${area}<br>
+        ⏰ Time: ${document.getElementById("time").value}<br><br>
+
+        <span style="font-size:22px;color:#ffeb3b;">
+            ${irradiance.toFixed(2)} W/m²
         </span><br><br>
 
         🌡 Temperature: ${tempC.toFixed(1)} °C | ${tempF.toFixed(1)} °F<br>
         💧 Humidity: ${humidity.toFixed(0)} %<br>
-        🌬 Pressure: ${pressure.toFixed(0)} hPa | ${pressureMmHg.toFixed(1)} mmHg
+        🌬 Pressure: ${pressure.toFixed(0)} hPa
     `;
+
+    showPage('resultPage');
 }
 </script>
 
